@@ -1,4 +1,4 @@
-package gui;
+package com.endgame.vectordesigntool;
 
 import javax.swing.*;
 import java.awt.*;
