@@ -11,8 +11,10 @@ import java.awt.event.ActionListener;
  * @version 1.0
  */
 public class Gui extends JFrame implements ActionListener, Runnable {
-    public static final int WIDTH = 1400;
-    public static final int HEIGHT = 700;
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+    public final double WIDTH = screenSize.getWidth();
+    public final double HEIGHT = screenSize.getHeight();
 
     /**
      *
@@ -25,7 +27,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     }
 
     private void createGUI(){
-        setSize(WIDTH, HEIGHT);
+        setSize((int)(WIDTH * 0.85), (int)(HEIGHT * 0.85));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         setVisible(true);
