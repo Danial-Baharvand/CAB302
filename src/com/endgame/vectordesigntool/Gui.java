@@ -6,6 +6,8 @@ import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.io.File;
 
 import static java.awt.Color.black;
@@ -13,16 +15,18 @@ import static java.awt.Color.black;
 /**
  *
  * @authors Group_010 - Daniel Baharvand, James Dick, Jai Hunt, Jovi Lee
- * @version 1.3
+ * @version 1.4
  */
 public class Gui extends JFrame implements ActionListener, Runnable {
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-    public final double WIDTH = screenSize.getWidth();
-    public final double HEIGHT = screenSize.getHeight();
+    public double WIDTH = screenSize.getWidth();
+    public double HEIGHT = screenSize.getHeight();
     public final double widthProp = 0.8;
     public final double heightProp = 0.7;
-
+    JInternalFrame shapesWindow;
+    JInternalFrame colorWindow;
+    JInternalFrame historyWindow;
     /**
      *
      * @param title
@@ -36,8 +40,10 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     public void createGUI(){
         setSize((int)(WIDTH * widthProp), (int)(HEIGHT * heightProp));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
         setJMenuBar(createMenu());
         getContentPane().add(display());
+        addComponentListener(new ResizeListener());
         setVisible(true);
     }
 
@@ -90,14 +96,18 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         tools.add(shapes);
         tools.add(toolColorChooser);
         tools.add(history);
+        save.addActionListener((new saveAction()));
         load.addActionListener(new loadAction());
         exit.addActionListener(new exitAction());
+        shapes.addActionListener(new shapesToggleAction());
+        toolColorChooser.addActionListener(new colorToggleAction());
+        history.addActionListener(new historyToggleAction());
         return bar;
     }
 
     private JInternalFrame createShapes(){
         //Frame
-        JInternalFrame shapesWindow = new JInternalFrame("Shapes");
+         shapesWindow = new JInternalFrame("Shapes");
         //Panel
         JPanel shapesPanel = new JPanel(new GridLayout(4, 1));
         //Buttons
@@ -117,7 +127,17 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         shapesWindow.setVisible(true);
         return shapesWindow;
     }
-
+    private JInternalFrame createColorWindow(){
+        colorWindow = new JInternalFrame("Color");
+        JColorChooser colors= new JColorChooser(black);
+        colors.setPreviewPanel(new JPanel());
+        //Setting window parameters
+        colorWindow.setSize(600, 250);
+        colorWindow.setVisible(true);
+        //Adding to window
+        colorWindow.add(colors);
+        return colorWindow;
+    }
     private JInternalFrame createHistoryWindow() {
         //History
         String subject[] = { "shapesPanel.add(elButton)", " shapesPanel.add(recButto",
@@ -125,39 +145,40 @@ public class Gui extends JFrame implements ActionListener, Runnable {
                 " orChooser colors= new JColorChooser(bla ",
                 " Bar.setPreferredSize(new Dimen ", "Frame shapesWindow = new JInternalFram" };
 
-        JInternalFrame historyWindow = new JInternalFrame("History");
+        historyWindow = new JInternalFrame("History");
         JList<String> list = new JList<String>(subject);
         JScrollPane scrollWindow = new JScrollPane(list);
         //Setting parameters
         scrollWindow.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         scrollWindow.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         historyWindow.setSize(300, 300);
-        historyWindow.setLocation(1500, 0);
+        System.out.println(getContentPane().getBounds().getSize().width);
         historyWindow.setVisible(true);
         //Adding scrolling window
         historyWindow.add(scrollWindow);
         return historyWindow;
     }
 
-    private JInternalFrame createColorWindow(){
-        JInternalFrame colorWindow = new JInternalFrame("Color");
-        JColorChooser colors= new JColorChooser(black);
-        colors.setPreviewPanel(new JPanel());
-        //Setting window parameters
-        colorWindow.setSize(600, 250);
-        colorWindow.setLocation((int)(WIDTH * widthProp)-620, (int)(HEIGHT * heightProp)-315);
-        colorWindow.setVisible(true);
-        //Adding to window
-        colorWindow.add(colors);
-        return colorWindow;
-    }
+
 
     class exitAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
             System.exit(0);
         }
     }
+    class saveAction implements ActionListener{
+        public void actionPerformed (ActionEvent e){
+            JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
 
+            int returnValue = jfc.showSaveDialog(null);
+            // int returnValue = jfc.showSaveDialog(null);
+
+            if (returnValue == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = jfc.getSelectedFile();
+                System.out.println(selectedFile.getAbsolutePath());
+            }
+        }
+    }
     class loadAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
             JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
@@ -171,6 +192,28 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             }
         }
     }
+    class shapesToggleAction implements ActionListener{
+        public void actionPerformed (ActionEvent e){
+            if(shapesWindow.isVisible()){shapesWindow.setVisible(false);}
+            else{shapesWindow.setVisible(true); shapesWindow.setLocation(0,30);}
+        }
+    }
+    class colorToggleAction implements ActionListener{
+        public void actionPerformed (ActionEvent e){
+            if(colorWindow.isVisible()){colorWindow.setVisible(false);}
+            else {
+                WIDTH = screenSize.getWidth();
+                HEIGHT = screenSize.getHeight();
+                colorWindow.setVisible(true);
+                colorWindow.setLocation((int)(WIDTH * widthProp)-620, (int)(HEIGHT * heightProp)-315);}
+        }
+    }
+    class historyToggleAction implements ActionListener{
+        public void actionPerformed (ActionEvent e){
+            if(historyWindow.isVisible()){historyWindow.setVisible(false);}
+            else{historyWindow.setVisible(true); historyWindow.setLocation((int)(WIDTH * widthProp)-620, (int)(HEIGHT * heightProp)-950);}
+        }
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -181,6 +224,20 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         public void actionPerformed(ActionEvent e) {
             Component source = (Component) e.getSource();
             System.out.println(source);
+        }
+    }
+    class ResizeListener implements ComponentListener {
+
+        public void componentHidden(ComponentEvent e) {}
+        public void componentMoved(ComponentEvent e) {}
+        public void componentShown(ComponentEvent e) {}
+
+        public void componentResized(ComponentEvent e) {
+            historyWindow.setLocation(getContentPane().getBounds().getSize().width-300,getContentPane().getBounds().getSize().height-900);
+            colorWindow.setLocation(getContentPane().getBounds().getSize().width-600,getContentPane().getBounds().getSize().height-250);
+            System.out.println(getContentPane().getBounds().getSize().width);
+            System.out.println(getContentPane().getBounds().getSize().height);
+
         }
     }
 
