@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2c7ec812-4634-47d2-aadb-c28ed94c8cff" name="Default Changelist" comment="">
+    <list default="true" id="2c7ec812-4634-47d2-aadb-c28ed94c8cff" name="Default Changelist" comment="Ver 1.5&#10;Complete shapes functionality. The code is very messy and varriables are all over the place. needs to be refactored.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/assignment02/com/endgame/vectordesigntool/Gui.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/assignment02/com/endgame/vectordesigntool/Gui.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/endgame/vectordesigntool/Gui.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/endgame/vectordesigntool/Gui.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/endgame/vectordesigntool/Shapes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/endgame/vectordesigntool/Shapes.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -24,8 +25,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/endgame/vectordesigntool/Gui.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2115">
-              <caret line="135" column="38" lean-forward="true" selection-start-line="135" selection-start-column="38" selection-end-line="135" selection-end-column="38" />
+            <state relative-caret-position="5474">
+              <caret line="324" column="22" selection-start-line="324" selection-start-column="22" selection-end-line="324" selection-end-column="22" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -36,13 +37,12 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/endgame/vectordesigntool/Shapes.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="588">
-              <caret line="50" column="25" selection-start-line="50" selection-start-column="25" selection-end-line="50" selection-end-column="25" />
+            <state relative-caret-position="680">
+              <caret line="42" column="9" lean-forward="true" selection-start-line="42" selection-start-column="9" selection-end-line="42" selection-end-column="9" />
               <folding>
                 <element signature="e#230#239#0" expanded="true" />
                 <element signature="e#279#288#0" expanded="true" />
-                <element signature="e#236#237#0" expanded="true" />
-                <element signature="e#271#272#0" expanded="true" />
+                <element signature="e#563#564#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -60,8 +60,9 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>shapesWin</find>
-      <find>canvas</find>
       <find>menulis</find>
+      <find>canvas</find>
+      <find>display</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -206,7 +207,28 @@
       <option name="project" value="LOCAL" />
       <updated>1558550887205</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Ver 1.4&#10;Implemented save and tools functionality. Floating windows move with the window boundries dynamically (finally). intial positions of the windows are now based on the actual window size.">
+      <created>1558603293253</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1558603293253</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Ver 1.5&#10;Complete shapes functionality. The code is very messy and varriables are all over the place. needs to be refactored.">
+      <created>1558603399239</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1558603399239</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Ver 1.5&#10;Complete shapes functionality. The code is very messy and varriables are all over the place. needs to be refactored.">
+      <created>1558604115013</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1558604115013</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -229,7 +251,7 @@
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.32936078" />
       <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" />
-      <window_info anchor="bottom" id="Version Control" order="9" weight="0.32936078" />
+      <window_info anchor="bottom" id="Version Control" order="9" weight="0.3291536" />
       <window_info anchor="bottom" id="Messages" order="10" weight="0.3291536" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -293,7 +315,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Ver 1.4&#10;Implemented save and tools functionality. Floating windows move with the window boundries dynamically (finally). intial positions of the windows are now based on the actual window size." />
-    <option name="LAST_COMMIT_MESSAGE" value="Ver 1.4&#10;Implemented save and tools functionality. Floating windows move with the window boundries dynamically (finally). intial positions of the windows are now based on the actual window size." />
+    <MESSAGE value="Ver 1.5&#10;Complete shapes functionality. The code is very messy and varriables are all over the place. needs to be refactored." />
+    <option name="LAST_COMMIT_MESSAGE" value="Ver 1.5&#10;Complete shapes functionality. The code is very messy and varriables are all over the place. needs to be refactored." />
   </component>
   <component name="editorHistoryManager">
     <entry file="jar://$PROJECT_DIR$/../jdk-11.0.2/lib/src.zip!/java.desktop/javax/swing/JComponent.java">
@@ -315,8 +338,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/endgame/vectordesigntool/Gui.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2115">
-          <caret line="135" column="38" lean-forward="true" selection-start-line="135" selection-start-column="38" selection-end-line="135" selection-end-column="38" />
+        <state relative-caret-position="5474">
+          <caret line="324" column="22" selection-start-line="324" selection-start-column="22" selection-end-line="324" selection-end-column="22" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -325,13 +348,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/endgame/vectordesigntool/Shapes.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="588">
-          <caret line="50" column="25" selection-start-line="50" selection-start-column="25" selection-end-line="50" selection-end-column="25" />
+        <state relative-caret-position="680">
+          <caret line="42" column="9" lean-forward="true" selection-start-line="42" selection-start-column="9" selection-end-line="42" selection-end-column="9" />
           <folding>
             <element signature="e#230#239#0" expanded="true" />
             <element signature="e#279#288#0" expanded="true" />
-            <element signature="e#236#237#0" expanded="true" />
-            <element signature="e#271#272#0" expanded="true" />
+            <element signature="e#563#564#0" expanded="true" />
           </folding>
         </state>
       </provider>

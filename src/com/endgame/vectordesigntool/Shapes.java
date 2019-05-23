@@ -13,6 +13,7 @@ class Shapes {
     static int polLastX=-1;
     static int polLastY=-1;
     static Graphics g = Gui.canvas.getGraphics();
+    //static Graphics g= Gui.canvas.paintComponents();
     static void plot(int x,int y) {
         g.drawLine(x,y,x,y);
     }
@@ -26,15 +27,19 @@ class Shapes {
     static void rect(int x,int y) {
         if (pressedX < 0){pressedX=x;pressedY=y;}
         else {
-            g.drawRect(pressedX, pressedY, x-pressedX, y-pressedY);
-            pressedX=-1;
+                if(x<pressedX){x = x ^ pressedX ^ (pressedX = x);}
+                if(y<pressedY){y = y ^ pressedY ^ (pressedY = y);}
+                g.drawRect(pressedX, pressedY, x-pressedX, y-pressedY);
+                pressedX=-1;
         }
     }
     static void ellipse(int x,int y) {
         if (pressedX < 0){pressedX=x;pressedY=y;}
         else {
-            g.drawOval(pressedX, pressedY, x-pressedX, y-pressedY);
-            pressedX=-1;
+                if(x<pressedX){x = x ^ pressedX ^ (pressedX = x);}
+                if(y<pressedY){y = y ^ pressedY ^ (pressedY = y);}
+                g.drawOval(pressedX, pressedY, x-pressedX, y-pressedY);
+                pressedX=-1;
         }
     }
     static void polygon(int x,int y) {

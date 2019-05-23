@@ -214,13 +214,16 @@ public class Gui extends JFrame implements ActionListener, Runnable {
                 WIDTH = screenSize.getWidth();
                 HEIGHT = screenSize.getHeight();
                 colorWindow.setVisible(true);
-                colorWindow.setLocation((int)(WIDTH * widthProp)-620, (int)(HEIGHT * heightProp)-315);}
+                colorWindow.setLocation(getContentPane().getBounds().getSize().width-600,getContentPane().getBounds().getSize().height-250);
+            }
         }
     }
     class historyToggleAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
-            if(historyWindow.isVisible()){historyWindow.setVisible(false);}
-            else{historyWindow.setVisible(true); historyWindow.setLocation((int)(WIDTH * widthProp)-620, (int)(HEIGHT * heightProp)-950);}
+            if(historyWindow.isVisible()){
+                historyWindow.setLocation(getContentPane().getBounds().getSize().width-300,50);
+                historyWindow.setVisible(false);
+            } else{historyWindow.setVisible(true);}
         }
     }
     class plotAction implements ActionListener{
@@ -314,10 +317,12 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         public void componentShown(ComponentEvent e) {}
 
         public void componentResized(ComponentEvent e) {
-            historyWindow.setLocation(getContentPane().getBounds().getSize().width-300,getContentPane().getBounds().getSize().height-900);
+            historyWindow.setLocation(getContentPane().getBounds().getSize().width-300,50);
             colorWindow.setLocation(getContentPane().getBounds().getSize().width-600,getContentPane().getBounds().getSize().height-250);
             System.out.println(getContentPane().getBounds().getSize().width);
             System.out.println(getContentPane().getBounds().getSize().height);
+            revalidate();
+            repaint();
 
         }
     }
