@@ -1,13 +1,9 @@
 package com.endgame.vectordesigntool;
 
 import javax.swing.*;
-import javax.swing.event.MenuListener;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
+import java.awt.event.*;
 import java.io.File;
 
 import static java.awt.Color.black;
@@ -27,6 +23,9 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     JInternalFrame shapesWindow;
     JInternalFrame colorWindow;
     JInternalFrame historyWindow;
+    public static JPanel canvas;
+    enum Type {PLOT, LINE, RECTANGLE,ELLIPSE,POLYGON}
+    Type selectedShape;
     /**
      *
      * @param title
@@ -44,6 +43,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         setJMenuBar(createMenu());
         getContentPane().add(display());
         addComponentListener(new ResizeListener());
+        //Plot.plot();
         setVisible(true);
     }
 
@@ -51,20 +51,22 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         JDesktopPane bg = new JDesktopPane();
         bg.setBackground(Color.BLACK);
         bg.add(createColorWindow());
-        bg.add(canvas());
+        bg.add(makeCanvas());
         bg.add(createShapes());
         bg.add(createHistoryWindow());
         return bg;
     }
 
-    private JPanel canvas(){
+
+    public JPanel makeCanvas(){
         //Create a white canvas
-        JPanel can = new JPanel();
-        can.setSize(1000, 1000);
-        can.setLocation(150, 50);
-        can.setOpaque(true);
-        can.setBackground(Color.WHITE);
-        return can;
+        canvas = new JPanel();
+        canvas.setSize(1000, 1000);
+        canvas.setLocation(150, 50);
+        canvas.setOpaque(true);
+        canvas.setBackground(Color.WHITE);
+        canvas.addMouseListener(new canvasAction());
+        return canvas;
     }
 
     private JMenuBar createMenu(){
@@ -109,20 +111,27 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         //Frame
          shapesWindow = new JInternalFrame("Shapes");
         //Panel
-        JPanel shapesPanel = new JPanel(new GridLayout(4, 1));
+        JPanel shapesPanel = new JPanel(new GridLayout(5, 1));
         //Buttons
+        JButton plotButton = new JButton("PLOT" );
         JButton lineButton = new JButton("LINE" );
-        JButton recButton = new JButton("RECTANGLE" );
-        JButton elButton = new JButton("ELLIPSE" );
-        JButton polButton = new JButton("POLYGON" );
+        JButton rectButton = new JButton("RECTANGLE" );
+        JButton ellipseButton = new JButton("ELLIPSE" );
+        JButton polygonButton = new JButton("POLYGON" );
         //Setting shape parameters in window
         shapesWindow.setSize(100, 500);
         shapesWindow.setLocation(0, 30);
         //Adding shape panels to window
+        shapesPanel.add(plotButton);
+        plotButton.addActionListener((new plotAction()));
         shapesPanel.add(lineButton);
-        shapesPanel.add(recButton);
-        shapesPanel.add(elButton);
-        shapesPanel.add(polButton);
+        lineButton.addActionListener((new lineAction()));
+        shapesPanel.add(rectButton);
+        rectButton.addActionListener((new rectAction()));
+        shapesPanel.add(ellipseButton);
+        ellipseButton.addActionListener((new ellipseAction()));
+        shapesPanel.add(polygonButton);
+        polygonButton.addActionListener((new polygonAction()));
         shapesWindow.add(shapesPanel);
         shapesWindow.setVisible(true);
         return shapesWindow;
@@ -214,6 +223,78 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             else{historyWindow.setVisible(true); historyWindow.setLocation((int)(WIDTH * widthProp)-620, (int)(HEIGHT * heightProp)-950);}
         }
     }
+    class plotAction implements ActionListener{
+        public void actionPerformed (ActionEvent e){
+            selectedShape=Type.PLOT;
+            Shapes.pressedX=-1;
+            Shapes.pressedY=-1;
+        }
+    }
+    class lineAction implements ActionListener{
+        public void actionPerformed (ActionEvent e){
+            selectedShape=Type.LINE;
+            Shapes.pressedX=-1;
+            Shapes.pressedY=-1;
+        }
+    }
+    class rectAction implements ActionListener{
+        public void actionPerformed (ActionEvent e){
+            selectedShape=Type.RECTANGLE;
+            Shapes.pressedX=-1;
+            Shapes.pressedY=-1;
+        }
+    }
+    class ellipseAction implements ActionListener{
+        public void actionPerformed (ActionEvent e){
+            selectedShape=Type.ELLIPSE;
+            Shapes.pressedX=-1;
+            Shapes.pressedY=-1;
+        }
+    }
+    class polygonAction implements ActionListener{
+        public void actionPerformed (ActionEvent e){
+            selectedShape=Type.POLYGON;
+            Shapes.pressedX=-1;
+            Shapes.pressedY=-1;
+        }
+    }
+    class canvasAction implements MouseListener {
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            if (selectedShape==Type.PLOT) {
+                Shapes.plot(e.getX(), e.getY());
+            }else if (selectedShape==Type.LINE) {
+                Shapes.line(e.getX(), e.getY());
+            }else if (selectedShape==Type.RECTANGLE) {
+                Shapes.rect(e.getX(), e.getY());
+            }else if (selectedShape==Type.ELLIPSE) {
+                Shapes.ellipse(e.getX(), e.getY());
+            }else if (selectedShape==Type.POLYGON) {
+                Shapes.polygon(e.getX(), e.getY());
+            }
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+
+        }
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -240,6 +321,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
 
         }
     }
+
 
     @Override
     public void run() {
