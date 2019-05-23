@@ -11,7 +11,7 @@ import static java.awt.Color.black;
 /**
  *
  * @authors Group_010 - Daniel Baharvand, James Dick, Jai Hunt, Jovi Lee
- * @version 1.4
+ * @version 1.5
  */
 public class Gui extends JFrame implements ActionListener, Runnable {
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
