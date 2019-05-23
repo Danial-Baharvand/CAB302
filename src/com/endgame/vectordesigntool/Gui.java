@@ -11,8 +11,9 @@ import static java.awt.Color.black;
 /**
  *
  * @authors Group_010 - Daniel Baharvand, James Dick, Jai Hunt, Jovi Lee
- * @version 1.7
+ * @version 1.7 - Jovi's Branch
  */
+
 public class Gui extends JFrame implements ActionListener, Runnable {
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
@@ -20,6 +21,9 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     public double HEIGHT = screenSize.getHeight();
     public final double widthProp = 0.8;
     public final double heightProp = 0.7;
+    public final int canvSize = 1000;
+
+
     JButton polEndButton;
     JInternalFrame shapesWindow;
     JInternalFrame colorWindow;
@@ -62,7 +66,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     public JPanel makeCanvas(){
         //Create a white canvas
         canvas = new JPanel();
-        canvas.setSize(1000, 1000);
+        canvas.setSize(canvSize, canvSize);
         canvas.setLocation(150, 50);
         canvas.setOpaque(true);
         canvas.setBackground(Color.WHITE);
@@ -205,6 +209,8 @@ public class Gui extends JFrame implements ActionListener, Runnable {
                 System.out.println(selectedFile.getAbsolutePath());
             }
         }
+
+
     }
     class shapesToggleAction implements ActionListener{
         public void actionPerformed (ActionEvent e){

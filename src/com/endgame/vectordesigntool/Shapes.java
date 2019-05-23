@@ -14,9 +14,14 @@ class Shapes {
     static int polLastY=-1;
     static Graphics g = Gui.canvas.getGraphics();
     //static Graphics g= Gui.canvas.paintComponents();
+
+    static ArrayList<Float> History = new ArrayList<Float>();
+
     static void plot(int x,int y) {
         g.drawLine(x,y,x,y);
+
     }
+
     static void line(int x,int y) {
         if (pressedX < 0){pressedX=x;pressedY=y;}
         else {
@@ -24,6 +29,7 @@ class Shapes {
             pressedX=-1;
         }
     }
+
     static void rect(int x,int y) {
         if (pressedX < 0){pressedX=x;pressedY=y;}
         else {
@@ -33,6 +39,7 @@ class Shapes {
                 pressedX=-1;
         }
     }
+
     static void ellipse(int x,int y) {
         if (pressedX < 0){pressedX=x;pressedY=y;}
         else {
@@ -42,6 +49,7 @@ class Shapes {
                 pressedX=-1;
         }
     }
+
     static void polygon(int x,int y) {
         if (pressedX < 0){
             pressedX=x;
