@@ -207,11 +207,12 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             if (returnValue == JFileChooser.APPROVE_OPTION) {
                 File selectedFile = jfc.getSelectedFile();
                 System.out.println(selectedFile.getAbsolutePath());
+
+                FileStorage.load(selectedFile);
             }
         }
-
-
     }
+
     class shapesToggleAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
             if(shapesWindow.isVisible()){shapesWindow.setVisible(false);}

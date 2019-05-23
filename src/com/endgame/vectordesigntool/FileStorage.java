@@ -6,7 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 class FileStorage {
-    static void Load (File filename){
+    static void load (File filename){
     StringBuilder sb = new StringBuilder();
 //           FileReader fr = new FileReader(filename);
     Path path = filename.toPath();
@@ -25,5 +25,5 @@ class FileStorage {
 //            System.err.format("IOException: %s%n", ex);
     }
     System.out.println(sb);
-}
+    }
 }
