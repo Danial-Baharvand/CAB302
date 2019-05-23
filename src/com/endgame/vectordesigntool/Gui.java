@@ -11,7 +11,7 @@ import static java.awt.Color.black;
 /**
  *
  * @authors Group_010 - Daniel Baharvand, James Dick, Jai Hunt, Jovi Lee
- * @version 1.6
+ * @version 1.7
  */
 public class Gui extends JFrame implements ActionListener, Runnable {
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -20,6 +20,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     public double HEIGHT = screenSize.getHeight();
     public final double widthProp = 0.8;
     public final double heightProp = 0.7;
+    JButton polEndButton;
     JInternalFrame shapesWindow;
     JInternalFrame colorWindow;
     JInternalFrame historyWindow;
@@ -111,15 +112,16 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         //Frame
          shapesWindow = new JInternalFrame("Shapes");
         //Panel
-        JPanel shapesPanel = new JPanel(new GridLayout(5, 1));
+        JPanel shapesPanel = new JPanel(new GridLayout(6, 1));
         //Buttons
-        JButton plotButton = new JButton("PLOT" );
-        JButton lineButton = new JButton("LINE" );
-        JButton rectButton = new JButton("RECTANGLE" );
-        JButton ellipseButton = new JButton("ELLIPSE" );
-        JButton polygonButton = new JButton("POLYGON" );
+        JButton plotButton = new JButton(new ImageIcon("plot.png") );
+        JButton lineButton = new JButton(new ImageIcon(("line.png")) );
+        JButton rectButton = new JButton(new ImageIcon("rectangle.png"));
+        JButton ellipseButton = new JButton(new ImageIcon("ellipse.png") );
+        JButton polygonButton = new JButton(new ImageIcon("polygon.png") );
+        polEndButton = new JButton(new ImageIcon("finishedPolygon.png") );
         //Setting shape parameters in window
-        shapesWindow.setSize(100, 500);
+        shapesWindow.setSize(60, 300);
         shapesWindow.setLocation(0, 30);
         //Adding shape panels to window
         shapesPanel.add(plotButton);
@@ -132,6 +134,9 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         ellipseButton.addActionListener((new ellipseAction()));
         shapesPanel.add(polygonButton);
         polygonButton.addActionListener((new polygonAction()));
+        shapesPanel.add(polEndButton);
+        polEndButton.addActionListener((new polEndAction()));
+        polEndButton.setEnabled(false);
         shapesWindow.add(shapesPanel);
         shapesWindow.setVisible(true);
         return shapesWindow;
@@ -228,6 +233,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     }
     class plotAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
+            polEndButton.setEnabled(false);
             selectedShape=Type.PLOT;
             Shapes.pressedX=-1;
             Shapes.pressedY=-1;
@@ -235,6 +241,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     }
     class lineAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
+            polEndButton.setEnabled(false);
             selectedShape=Type.LINE;
             Shapes.pressedX=-1;
             Shapes.pressedY=-1;
@@ -242,6 +249,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     }
     class rectAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
+            polEndButton.setEnabled(false);
             selectedShape=Type.RECTANGLE;
             Shapes.pressedX=-1;
             Shapes.pressedY=-1;
@@ -249,6 +257,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     }
     class ellipseAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
+            polEndButton.setEnabled(false);
             selectedShape=Type.ELLIPSE;
             Shapes.pressedX=-1;
             Shapes.pressedY=-1;
@@ -259,6 +268,12 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             selectedShape=Type.POLYGON;
             Shapes.pressedX=-1;
             Shapes.pressedY=-1;
+            polEndButton.setEnabled(true);
+        }
+    }
+    class polEndAction implements ActionListener{
+        public void actionPerformed (ActionEvent e){
+            Shapes.polygon(Shapes.pressedX,Shapes.pressedY);
         }
     }
     class canvasAction implements MouseListener {
@@ -275,6 +290,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
                 Shapes.ellipse(e.getX(), e.getY());
             }else if (selectedShape==Type.POLYGON) {
                 Shapes.polygon(e.getX(), e.getY());
+
             }
         }
 
