@@ -11,7 +11,7 @@ import static java.awt.Color.black;
 /**
  *
  * @authors Group_010 - Daniel Baharvand, James Dick, Jai Hunt, Jovi Lee
- * @version 1.7 - Jovi's Branch
+ * @version 1.8
  */
 
 public class Gui extends JFrame implements ActionListener, Runnable {
@@ -21,7 +21,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     public double HEIGHT = screenSize.getHeight();
     public final double widthProp = 0.8;
     public final double heightProp = 0.7;
-    public final int canvSize = 1000;
+    static final int canvSize = 1000;
 
 
     JButton polEndButton;
@@ -219,6 +219,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             else{shapesWindow.setVisible(true); shapesWindow.setLocation(0,30);}
         }
     }
+
     class colorToggleAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
             if(colorWindow.isVisible()){colorWindow.setVisible(false);}
@@ -230,6 +231,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             }
         }
     }
+
     class historyToggleAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
             if(historyWindow.isVisible()){
@@ -244,6 +246,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             selectedShape=Type.PLOT;
             Shapes.pressedX=-1;
             Shapes.pressedY=-1;
+
         }
     }
     class lineAction implements ActionListener{
