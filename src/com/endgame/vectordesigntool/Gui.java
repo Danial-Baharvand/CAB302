@@ -28,9 +28,11 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     JInternalFrame shapesWindow;
     JInternalFrame colorWindow;
     JInternalFrame historyWindow;
+    JInternalFrame utilWindow;
     public static JPanel canvas;
     enum Type {PLOT, LINE, RECTANGLE,ELLIPSE,POLYGON}
     Type selectedShape;
+
     /**
      *
      * @param title
@@ -59,6 +61,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         bg.add(makeCanvas());
         bg.add(createShapes());
         bg.add(createHistoryWindow());
+        bg.add(createUtilWin());
         return bg;
     }
 
@@ -145,6 +148,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         shapesWindow.setVisible(true);
         return shapesWindow;
     }
+
     private JInternalFrame createColorWindow(){
         colorWindow = new JInternalFrame("Color");
         JColorChooser colors= new JColorChooser(black);
@@ -156,6 +160,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         colorWindow.add(colors);
         return colorWindow;
     }
+
     private JInternalFrame createHistoryWindow() {
         //History
         String subject[] = { "shapesPanel.add(elButton)", " shapesPanel.add(recButto",
@@ -177,7 +182,26 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         return historyWindow;
     }
 
-
+    private JInternalFrame createUtilWin(){
+        //Separate utilities window for zoom and grid features
+        utilWindow = new JInternalFrame("Utilities");
+        //Panel
+        JPanel utilPanel = new JPanel(new GridLayout(1, 2));
+        //Buttons
+        JButton zoomBtn = new JButton(new ImageIcon("magnifyingGlass.png"));
+        JButton gridBtn = new JButton(new ImageIcon("grid.png"));
+        //Setting utils parameters in window
+        utilWindow.setSize(100, 80);
+        utilWindow.setLocation(0, 600);
+        //Adding util to window
+        utilPanel.add(zoomBtn);
+        utilPanel.add(gridBtn);
+//        zoomBtn.addActionListener(new );
+//        gridBtn.addActionListener(new );
+        utilWindow.add(utilPanel);
+        utilWindow.setVisible(true);
+        return utilWindow;
+    }
 
     class exitAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
@@ -286,21 +310,27 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             Shapes.polygon(Shapes.pressedX,Shapes.pressedY);
         }
     }
+
+    class zoomAction implements ActionListener {
+        public void actionPerformed (ActionEvent e) {
+
+        }
+    }
+
     class canvasAction implements MouseListener {
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            if (selectedShape==Type.PLOT) {
+            if (selectedShape == Type.PLOT) {
                 Shapes.plot(e.getX(), e.getY());
-            }else if (selectedShape==Type.LINE) {
+            } else if (selectedShape == Type.LINE) {
                 Shapes.line(e.getX(), e.getY());
-            }else if (selectedShape==Type.RECTANGLE) {
+            } else if (selectedShape == Type.RECTANGLE) {
                 Shapes.rect(e.getX(), e.getY());
-            }else if (selectedShape==Type.ELLIPSE) {
+            } else if (selectedShape == Type.ELLIPSE) {
                 Shapes.ellipse(e.getX(), e.getY());
-            }else if (selectedShape==Type.POLYGON) {
+            } else if (selectedShape == Type.POLYGON) {
                 Shapes.polygon(e.getX(), e.getY());
-
             }
         }
 
@@ -336,6 +366,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             System.out.println(source);
         }
     }
+
     class ResizeListener implements ComponentListener {
 
         public void componentHidden(ComponentEvent e) {}
@@ -343,8 +374,9 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         public void componentShown(ComponentEvent e) {}
 
         public void componentResized(ComponentEvent e) {
-            historyWindow.setLocation(getContentPane().getBounds().getSize().width-300,50);
-            colorWindow.setLocation(getContentPane().getBounds().getSize().width-600,getContentPane().getBounds().getSize().height-250);
+            historyWindow.setLocation(getContentPane().getBounds().getSize().width - 300,50);
+            colorWindow.setLocation(getContentPane().getBounds().getSize().width - 600,getContentPane().getBounds().getSize().height - 250);
+            utilWindow.setLocation(0, getContentPane().getBounds().getSize().height - 80);
             System.out.println(getContentPane().getBounds().getSize().width);
             System.out.println(getContentPane().getBounds().getSize().height);
             revalidate();
