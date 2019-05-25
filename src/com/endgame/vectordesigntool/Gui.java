@@ -271,8 +271,6 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             selectBtn = Type.PLOT;
             Shapes.pressedX = -1;
             Shapes.pressedY = -1;
-            repaint();
-            canvas.repaint();
 
         }
     }
@@ -341,6 +339,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             } else if (selectBtn == Type.POLYGON) {
                 Shapes.polygon(e.getX(), e.getY());
             }
+            canvas.repaint();
 
         }
 
@@ -374,7 +373,6 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             //System.out.println(getContentPane().getBounds().getSize().height);
             //Load.load("example1.vec" );
             //paint(Shapes.g);
-            canvas.repaint();
 
 
         }

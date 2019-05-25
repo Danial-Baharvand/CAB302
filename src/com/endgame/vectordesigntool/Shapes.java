@@ -18,6 +18,7 @@ class Shapes {
 
     static void plot(int x,int y,Graphics g) {
         g.drawLine(x, y, x, y);
+
     }
     static void plot(int x,int y) {
      //plot(x, y, canvasG);
@@ -25,34 +26,45 @@ class Shapes {
         History.add(String.valueOf((float)x/Gui.canvSize));
         History.add(String.valueOf((float)y/Gui.canvSize));
         History.add("\n");
-        Gui.tempVEC+=History.toString().replace(",", "")  //remove the commas
-                .replace("[", "")  //remove the right bracket
-                .replace("]", "");  //remove the left bracket
+        addHisTOTemp();
 
-       System.out.print(Gui.tempVEC);
+       //System.out.print(Gui.tempVEC);
         History.clear();
 
     }
 
     static void line(int x,int y,Graphics g) {
-        if (pressedX < 0){
+        if (pressedX < 0 && pressedY<0){
             pressedX = x;
             pressedY = y;
         } else {
             g.drawLine(pressedX, pressedY, x, y);
+            System.out.print(Gui.tempVEC);
+            //System.out.println(History);
+            History.clear();
+            pressedX = -1;
+            pressedY=-1;
+        }
+    }
+    static void line(int x,int y) {
+        if (pressedX < 0 && pressedY<0){
+            pressedX = x;
+            pressedY = y;
+        } else {
             History.add("LINE");
             History.add(String.valueOf((float)pressedX/Gui.canvSize));
             History.add(String.valueOf((float)pressedY/Gui.canvSize));
             History.add(String.valueOf((float)x/Gui.canvSize));
             History.add(String.valueOf((float)y/Gui.canvSize));
             History.add("\n");
+            addHisTOTemp();
+            System.out.print(Gui.tempVEC);
             //System.out.println(History);
             History.clear();
             pressedX = -1;
+            pressedY=-1;
         }
-    }
-    static void line(int x,int y) {
-        line(x, y,canvasG);
+
     }
 
     static void rect(int x,int y, Graphics g) {
@@ -69,6 +81,7 @@ class Shapes {
             History.add(String.valueOf((float)x/Gui.canvSize));
             History.add(String.valueOf((float)y/Gui.canvSize));
             History.add("\n");
+            addHisTOTemp();
             History.clear();
             pressedX = -1;
         }
@@ -91,6 +104,7 @@ class Shapes {
             History.add(String.valueOf((float)x/Gui.canvSize));
             History.add(String.valueOf((float)y/Gui.canvSize));
             History.add("\n");
+            addHisTOTemp();
             History.clear();
             pressedX = -1;
         }
@@ -114,6 +128,7 @@ class Shapes {
                 History.add(String.valueOf((float)polY.get(i)/Gui.canvSize));
             }
             History.add("\n");
+            addHisTOTemp();
             System.out.println(History);
             History.clear();
             polX.clear();
@@ -131,5 +146,11 @@ class Shapes {
     }
     static void polygon(int x,int y) {
         polygon(x, y, canvasG);
+    }
+    static void addHisTOTemp(){
+        Gui.tempVEC+=History.toString().replace(",", "")  //remove the commas
+                .replace("[", "")  //remove the right bracket
+                .replace("]", "")  //remove the left bracket
+                .replaceFirst(".$","");
     }
 }
