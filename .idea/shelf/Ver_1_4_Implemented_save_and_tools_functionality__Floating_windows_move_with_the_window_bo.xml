@@ -1,9 +1,0 @@
-<changelist name="Ver_1_4_Implemented_save_and_tools_functionality__Floating_windows_move_with_the_window_bo" date="1558630777995" recycled="false">
-  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Ver_1_4_Implemented_save_and_tools_functionality__Floating_windows_move_with_the_window_bo/shelved.patch" />
-  <option name="DESCRIPTION" value="Ver 1.4 Implemented save and tools functionality. Floating windows move with the window boundries dynamically (finally). intial positions of the windows are now based on the actual window size." />
-  <binary>
-    <option name="BEFORE_PATH" value="out/production/assignment02/com/endgame/vectordesigntool/Gui.class" />
-    <option name="AFTER_PATH" value="out/production/assignment02/com/endgame/vectordesigntool/Gui.class" />
-    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Ver_1_4_Implemented_save_and_tools_functionality__Floating_windows_move_with_the_window_bo/Gui.class" />
-  </binary>
-</changelist>

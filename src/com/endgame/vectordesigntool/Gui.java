@@ -11,7 +11,7 @@ import static java.awt.Color.black;
 /**
  *
  * @authors Group_010 - Daniel Baharvand, James Dick, Jai Hunt, Jovi Lee
- * @version 1.8
+ * @version 1.9
  */
 
 public class Gui extends JFrame implements ActionListener, Runnable {
@@ -20,9 +20,8 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     public double WIDTH = screenSize.getWidth();
     public double HEIGHT = screenSize.getHeight();
     public final double widthProp = 0.8;
-    public final double heightProp = 0.7;
+    public final double heightProp = 0.8;
     static final int canvSize = 1000;
-
 
     JButton polEndButton;
     JInternalFrame shapesWindow;
@@ -105,6 +104,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         tools.add(history);
         save.addActionListener((new saveAction()));
         load.addActionListener(new loadAction());
+        undo.addActionListener(new undoAction());
         exit.addActionListener(new exitAction());
         shapes.addActionListener(new shapesToggleAction());
         toolColorChooser.addActionListener(new colorToggleAction());
@@ -208,8 +208,14 @@ public class Gui extends JFrame implements ActionListener, Runnable {
                 File selectedFile = jfc.getSelectedFile();
                 System.out.println(selectedFile.getAbsolutePath());
 
-                FileStorage.load(selectedFile);
+                //FileStorage.load(selectedFile);
+                Load.load(selectedFile);
             }
+        }
+    }
+    class undoAction implements ActionListener{
+        public void actionPerformed (ActionEvent e){
+          //implement undo
         }
     }
 
