@@ -6,10 +6,10 @@ import java.util.Scanner;
 
 //Implements Load
  class Load {
-    static void load(File selectedFile) {
+    static void load(String selectedFile) {
         String drawingTool = null;
         // pass the path to the file as a parameter
-        File file = new File(selectedFile.getAbsolutePath());
+        File file = new File(selectedFile);
          Scanner sc = null;
          try {
              sc = new Scanner(file);

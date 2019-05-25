@@ -10,22 +10,31 @@ class Shapes {
     private static int polLastY = -1;
     private static ArrayList<Integer> polX = new ArrayList<Integer>();
     private static ArrayList<Integer> polY = new ArrayList<Integer>();
-    private static Graphics g = Gui.canvas.getGraphics();
+    private static Graphics canvasG = Gui.canvas.getGraphics();
 
     static int pressedX = -1;
     static int pressedY = -1;
     static ArrayList<String> History = new ArrayList<String>();
 
-    static void plot(int x,int y) {
+    static void plot(int x,int y,Graphics g) {
         g.drawLine(x, y, x, y);
+    }
+    static void plot(int x,int y) {
+     //plot(x, y, canvasG);
         History.add("PLOT");
         History.add(String.valueOf((float)x/Gui.canvSize));
         History.add(String.valueOf((float)y/Gui.canvSize));
         History.add("\n");
+        Gui.tempVEC+=History.toString().replace(",", "")  //remove the commas
+                .replace("[", "")  //remove the right bracket
+                .replace("]", "");  //remove the left bracket
+
+       System.out.print(Gui.tempVEC);
         History.clear();
+
     }
 
-    static void line(int x,int y) {
+    static void line(int x,int y,Graphics g) {
         if (pressedX < 0){
             pressedX = x;
             pressedY = y;
@@ -37,13 +46,16 @@ class Shapes {
             History.add(String.valueOf((float)x/Gui.canvSize));
             History.add(String.valueOf((float)y/Gui.canvSize));
             History.add("\n");
-            System.out.println(History);
+            //System.out.println(History);
             History.clear();
             pressedX = -1;
         }
     }
+    static void line(int x,int y) {
+        line(x, y,canvasG);
+    }
 
-    static void rect(int x,int y) {
+    static void rect(int x,int y, Graphics g) {
         if (pressedX < 0){
             pressedX = x;
             pressedY = y;
@@ -61,8 +73,11 @@ class Shapes {
             pressedX = -1;
         }
     }
+    static void rect(int x,int y) {
+        rect(x, y, canvasG);
+    }
 
-    static void ellipse(int x, int y) {
+    static void ellipse(int x, int y, Graphics g) {
         if (pressedX < 0){
             pressedX = x;
             pressedY = y;
@@ -80,8 +95,10 @@ class Shapes {
             pressedX = -1;
         }
     }
-
-    static void polygon(int x,int y) {
+    static void ellipse(int x, int y) {
+        ellipse(x, y, canvasG);
+    }
+    static void polygon(int x,int y,Graphics g) {
         if (pressedX < 0){
             pressedX = x;
             pressedY = y;
@@ -111,5 +128,8 @@ class Shapes {
             polLastY = y;
             polCount++;
         }
+    }
+    static void polygon(int x,int y) {
+        polygon(x, y, canvasG);
     }
 }

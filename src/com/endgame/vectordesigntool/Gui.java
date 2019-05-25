@@ -23,9 +23,11 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     private JInternalFrame utilWindow;
     private Type selectBtn;
 
+    static String tempVEC="";
     protected static JPanel canvas;
     static final int canvSize = 1000;
     enum Type {PLOT, LINE, RECTANGLE, ELLIPSE, POLYGON}
+    static Graphics canvasG;
 
     /**
      *
@@ -62,7 +64,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
 
     private JPanel makeCanvas(){
         //Create a white canvas
-        canvas = new JPanel();
+        canvas = new MyPanel();
         canvas.setSize(canvSize, canvSize);
         canvas.setLocation(150, 50);
         canvas.setOpaque(true);
@@ -222,7 +224,8 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             if (returnValue == JFileChooser.APPROVE_OPTION) {
                 File selectedFile = jfc.getSelectedFile();
                 System.out.println(selectedFile.getAbsolutePath());
-                Load.load(selectedFile);
+                Gui.canvas.getGraphics().dispose();
+                Load.load(selectedFile.getAbsolutePath());
             }
         }
     }
@@ -268,6 +271,8 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             selectBtn = Type.PLOT;
             Shapes.pressedX = -1;
             Shapes.pressedY = -1;
+            repaint();
+            canvas.repaint();
 
         }
     }
@@ -336,6 +341,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             } else if (selectBtn == Type.POLYGON) {
                 Shapes.polygon(e.getX(), e.getY());
             }
+
         }
 
         @Override
@@ -364,25 +370,29 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             historyWindow.setLocation(getContentPane().getBounds().getSize().width - 300,50);
             colorWindow.setLocation(getContentPane().getBounds().getSize().width - 600,getContentPane().getBounds().getSize().height - 250);
             utilWindow.setLocation(0, getContentPane().getBounds().getSize().height - 80);
-            System.out.println(getContentPane().getBounds().getSize().width);
-            System.out.println(getContentPane().getBounds().getSize().height);
-            revalidate();
-            repaint();
+            //System.out.println(getContentPane().getBounds().getSize().width);
+            //System.out.println(getContentPane().getBounds().getSize().height);
+            //Load.load("example1.vec" );
+            //paint(Shapes.g);
+            canvas.repaint();
+
+
         }
+
 
         @Override
         public void componentMoved(ComponentEvent e) {
-
+            //Load.load("example1.vec" );
         }
 
         @Override
         public void componentShown(ComponentEvent e) {
-
+            //Load.load("example1.vec" );
         }
 
         @Override
         public void componentHidden(ComponentEvent e) {
-
+            //Load.load("example1.vec" );
         }
     }
 
