@@ -2,6 +2,8 @@ package com.endgame.vectordesigntool;
 
 import java.awt.*;
 import java.util.ArrayList;
+import com.endgame.vectordesigntool.Colour.*;
+
 // implement shapes
 class Shapes {
     //pressedX is the first location, x is second
@@ -17,6 +19,7 @@ class Shapes {
     static ArrayList<String> History = new ArrayList<String>();
 
     static void plot(int x,int y) {
+        g.setColor(Colour.getColour());
         g.drawLine(x, y, x, y);
         History.add("PLOT");
         History.add(String.valueOf((float)x/Gui.canvSize));
@@ -26,6 +29,7 @@ class Shapes {
     }
 
     static void line(int x,int y) {
+        g.setColor(Colour.getColour());
         if (pressedX < 0){
             pressedX = x;
             pressedY = y;
@@ -44,6 +48,7 @@ class Shapes {
     }
 
     static void rect(int x,int y) {
+        g.setColor(Colour.getColour());
         if (pressedX < 0){
             pressedX = x;
             pressedY = y;
@@ -63,6 +68,7 @@ class Shapes {
     }
 
     static void ellipse(int x, int y) {
+        g.setColor(Colour.getColour());
         if (pressedX < 0){
             pressedX = x;
             pressedY = y;
@@ -82,6 +88,7 @@ class Shapes {
     }
 
     static void polygon(int x,int y) {
+        g.setColor(Colour.getColour());
         if (pressedX < 0){
             pressedX = x;
             pressedY = y;
