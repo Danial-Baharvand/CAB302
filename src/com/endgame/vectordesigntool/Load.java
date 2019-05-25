@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
+//Implements Load
  class Load {
     static void load(File selectedFile) {
         String drawingTool = null;

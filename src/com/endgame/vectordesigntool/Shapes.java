@@ -3,7 +3,7 @@ package com.endgame.vectordesigntool;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-
+// implement shapes
 class Shapes {
     //pressedX is the first location, x is second
     static int pressedX=-1;

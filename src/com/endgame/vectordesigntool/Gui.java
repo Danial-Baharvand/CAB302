@@ -61,7 +61,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         return bg;
     }
 
-
+    //Makes the canvas
     public JPanel makeCanvas(){
         //Create a white canvas
         canvas = new JPanel();
