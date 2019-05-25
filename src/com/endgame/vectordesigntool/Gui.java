@@ -6,48 +6,45 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 
-import static java.awt.Color.black;
-
 /**
  *
  * @authors Group_010 - Daniel Baharvand, James Dick, Jai Hunt, Jovi Lee
- * @version 1.9
+ * @version 2.0
  */
-
 public class Gui extends JFrame implements ActionListener, Runnable {
-    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-    public double WIDTH = screenSize.getWidth();
-    public double HEIGHT = screenSize.getHeight();
-    public final double widthProp = 0.8;
-    public final double heightProp = 0.8;
+    private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    private double WIDTH = screenSize.getWidth();
+    private double HEIGHT = screenSize.getHeight();
+    private JButton polEndButton;
+    private JInternalFrame shapesWindow;
+    private JInternalFrame colorWindow;
+    private JInternalFrame historyWindow;
+    private JInternalFrame utilWindow;
+    private Type selectBtn;
+
+    protected static JPanel canvas;
     static final int canvSize = 1000;
+    enum Type {PLOT, LINE, RECTANGLE, ELLIPSE, POLYGON}
 
-    JButton polEndButton;
-    JInternalFrame shapesWindow;
-    JInternalFrame colorWindow;
-    JInternalFrame historyWindow;
-    public static JPanel canvas;
-    enum Type {PLOT, LINE, RECTANGLE,ELLIPSE,POLYGON}
-    Type selectedShape;
     /**
      *
      * @param title
      * @throws HeadlessException when code that is dependent on keyboard, display or mouse is called in environment
      * that does not support any of these things.
      */
-    public Gui(String title) throws HeadlessException{
+    private Gui(String title) throws HeadlessException{
         super(title);
     }
 
-    public void createGUI(){
+    private void createGUI(){
+        double widthProp = 0.8;
+        double heightProp = 0.8;
         setSize((int)(WIDTH * widthProp), (int)(HEIGHT * heightProp));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
         setJMenuBar(createMenu());
         getContentPane().add(display());
         addComponentListener(new ResizeListener());
-        //Plot.plot();
         setVisible(true);
     }
 
@@ -58,11 +55,12 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         bg.add(makeCanvas());
         bg.add(createShapes());
         bg.add(createHistoryWindow());
+        bg.add(createUtilWin());
         return bg;
     }
 
-    //Makes the canvas
-    public JPanel makeCanvas(){
+
+    private JPanel makeCanvas(){
         //Create a white canvas
         canvas = new JPanel();
         canvas.setSize(canvSize, canvSize);
@@ -114,7 +112,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
 
     private JInternalFrame createShapes(){
         //Frame
-         shapesWindow = new JInternalFrame("Shapes");
+        shapesWindow = new JInternalFrame("Shapes");
         //Panel
         JPanel shapesPanel = new JPanel(new GridLayout(6, 1));
         //Buttons
@@ -145,9 +143,10 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         shapesWindow.setVisible(true);
         return shapesWindow;
     }
+
     private JInternalFrame createColorWindow(){
         colorWindow = new JInternalFrame("Color");
-        JColorChooser colors= new JColorChooser(black);
+        JColorChooser colors= new JColorChooser(Color.BLACK);
         colors.setPreviewPanel(new JPanel());
         //Setting window parameters
         colorWindow.setSize(600, 250);
@@ -156,15 +155,16 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         colorWindow.add(colors);
         return colorWindow;
     }
+
     private JInternalFrame createHistoryWindow() {
         //History
-        String subject[] = { "shapesPanel.add(elButton)", " shapesPanel.add(recButto",
+        String[] subject = {"shapesPanel.add(elButton)", " shapesPanel.add(recButto",
                 "hapesWindow.setSize(100, ", "   apesWindow.add(shapesPanel);", "   menuOpen = new JMenu(\"Open\" ",
                 " orChooser colors= new JColorChooser(bla ",
-                " Bar.setPreferredSize(new Dimen ", "Frame shapesWindow = new JInternalFram" };
+                " Bar.setPreferredSize(new Dimen ", "Frame shapesWindow = new JInternalFram"};
 
         historyWindow = new JInternalFrame("History");
-        JList<String> list = new JList<String>(subject);
+        JList<String> list = new JList<>(subject);
         JScrollPane scrollWindow = new JScrollPane(list);
         //Setting parameters
         scrollWindow.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -177,38 +177,51 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         return historyWindow;
     }
 
-
+    private JInternalFrame createUtilWin(){
+        //Separate utilities window for zoom and grid features
+        utilWindow = new JInternalFrame("Utilities");
+        //Panel
+        JPanel utilPanel = new JPanel(new GridLayout(1, 2));
+        //Buttons
+        JButton zoomBtn = new JButton(new ImageIcon("magnifyingGlass.png"));
+        JButton gridBtn = new JButton(new ImageIcon("grid.png"));
+        //Setting utils parameters in window
+        utilWindow.setSize(100, 80);
+        utilWindow.setLocation(0, 600);
+        //Adding util to window
+        utilPanel.add(zoomBtn);
+        utilPanel.add(gridBtn);
+        zoomBtn.addActionListener(new zoomAction());
+        gridBtn.addActionListener(new gridAction());
+        utilWindow.add(utilPanel);
+        utilWindow.setVisible(true);
+        return utilWindow;
+    }
 
     class exitAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
             System.exit(0);
         }
     }
+
     class saveAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
             JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-
             int returnValue = jfc.showSaveDialog(null);
-            // int returnValue = jfc.showSaveDialog(null);
-
             if (returnValue == JFileChooser.APPROVE_OPTION) {
                 File selectedFile = jfc.getSelectedFile();
                 System.out.println(selectedFile.getAbsolutePath());
             }
         }
     }
+
     class loadAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
             JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-
             int returnValue = jfc.showOpenDialog(null);
-            // int returnValue = jfc.showSaveDialog(null);
-
             if (returnValue == JFileChooser.APPROVE_OPTION) {
                 File selectedFile = jfc.getSelectedFile();
                 System.out.println(selectedFile.getAbsolutePath());
-
-                //FileStorage.load(selectedFile);
                 Load.load(selectedFile);
             }
         }
@@ -221,14 +234,17 @@ public class Gui extends JFrame implements ActionListener, Runnable {
 
     class shapesToggleAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
-            if(shapesWindow.isVisible()){shapesWindow.setVisible(false);}
-            else{shapesWindow.setVisible(true); shapesWindow.setLocation(0,30);}
+            if(shapesWindow.isVisible())shapesWindow.setVisible(false);
+            else {
+                shapesWindow.setVisible(true);
+                shapesWindow.setLocation(0,30);
+            }
         }
     }
 
     class colorToggleAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
-            if(colorWindow.isVisible()){colorWindow.setVisible(false);}
+            if(colorWindow.isVisible())colorWindow.setVisible(false);
             else {
                 WIDTH = screenSize.getWidth();
                 HEIGHT = screenSize.getHeight();
@@ -243,70 +259,82 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             if(historyWindow.isVisible()){
                 historyWindow.setLocation(getContentPane().getBounds().getSize().width-300,50);
                 historyWindow.setVisible(false);
-            } else{historyWindow.setVisible(true);}
+            } else historyWindow.setVisible(true);
         }
     }
     class plotAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
             polEndButton.setEnabled(false);
-            selectedShape=Type.PLOT;
-            Shapes.pressedX=-1;
-            Shapes.pressedY=-1;
+            selectBtn = Type.PLOT;
+            Shapes.pressedX = -1;
+            Shapes.pressedY = -1;
 
         }
     }
     class lineAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
             polEndButton.setEnabled(false);
-            selectedShape=Type.LINE;
-            Shapes.pressedX=-1;
-            Shapes.pressedY=-1;
+            selectBtn = Type.LINE;
+            Shapes.pressedX = -1;
+            Shapes.pressedY = -1;
         }
     }
     class rectAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
             polEndButton.setEnabled(false);
-            selectedShape=Type.RECTANGLE;
-            Shapes.pressedX=-1;
-            Shapes.pressedY=-1;
+            selectBtn = Type.RECTANGLE;
+            Shapes.pressedX = -1;
+            Shapes.pressedY = -1;
         }
     }
     class ellipseAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
             polEndButton.setEnabled(false);
-            selectedShape=Type.ELLIPSE;
-            Shapes.pressedX=-1;
-            Shapes.pressedY=-1;
+            selectBtn = Type.ELLIPSE;
+            Shapes.pressedX = -1;
+            Shapes.pressedY = -1;
         }
     }
     class polygonAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
-            selectedShape=Type.POLYGON;
-            Shapes.pressedX=-1;
-            Shapes.pressedY=-1;
+            selectBtn =Type.POLYGON;
+            Shapes.pressedX = -1;
+            Shapes.pressedY = -1;
             polEndButton.setEnabled(true);
         }
     }
     class polEndAction implements ActionListener{
-        public void actionPerformed (ActionEvent e){
+        public void actionPerformed(ActionEvent e) {
             Shapes.polygon(Shapes.pressedX,Shapes.pressedY);
         }
     }
-    class canvasAction implements MouseListener {
 
+    class zoomAction implements ActionListener {
+        public void actionPerformed (ActionEvent e) {
+            //
+        }
+    }
+
+    class gridAction implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            //
+        }
+    }
+
+
+    class canvasAction implements MouseListener {
         @Override
         public void mouseClicked(MouseEvent e) {
-            if (selectedShape==Type.PLOT) {
+            if (selectBtn == Type.PLOT) {
                 Shapes.plot(e.getX(), e.getY());
-            }else if (selectedShape==Type.LINE) {
+            } else if (selectBtn == Type.LINE) {
                 Shapes.line(e.getX(), e.getY());
-            }else if (selectedShape==Type.RECTANGLE) {
+            } else if (selectBtn == Type.RECTANGLE) {
                 Shapes.rect(e.getX(), e.getY());
-            }else if (selectedShape==Type.ELLIPSE) {
+            } else if (selectBtn == Type.ELLIPSE) {
                 Shapes.ellipse(e.getX(), e.getY());
-            }else if (selectedShape==Type.POLYGON) {
+            } else if (selectBtn == Type.POLYGON) {
                 Shapes.polygon(e.getX(), e.getY());
-
             }
         }
 
@@ -331,34 +359,37 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         }
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-
-    }
-
-    private class MenuLis implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            Component source = (Component) e.getSource();
-            System.out.println(source);
-        }
-    }
     class ResizeListener implements ComponentListener {
-
-        public void componentHidden(ComponentEvent e) {}
-        public void componentMoved(ComponentEvent e) {}
-        public void componentShown(ComponentEvent e) {}
-
         public void componentResized(ComponentEvent e) {
-            historyWindow.setLocation(getContentPane().getBounds().getSize().width-300,50);
-            colorWindow.setLocation(getContentPane().getBounds().getSize().width-600,getContentPane().getBounds().getSize().height-250);
+            historyWindow.setLocation(getContentPane().getBounds().getSize().width - 300,50);
+            colorWindow.setLocation(getContentPane().getBounds().getSize().width - 600,getContentPane().getBounds().getSize().height - 250);
+            utilWindow.setLocation(0, getContentPane().getBounds().getSize().height - 80);
             System.out.println(getContentPane().getBounds().getSize().width);
             System.out.println(getContentPane().getBounds().getSize().height);
             revalidate();
             repaint();
+        }
+
+        @Override
+        public void componentMoved(ComponentEvent e) {
+
+        }
+
+        @Override
+        public void componentShown(ComponentEvent e) {
+
+        }
+
+        @Override
+        public void componentHidden(ComponentEvent e) {
 
         }
     }
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+    }
 
     @Override
     public void run() {
@@ -366,7 +397,8 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     }
 
     public static void main(String[] args){
-        javax.swing.SwingUtilities.invokeLater(new Gui("Vector Design Tool")); //should display "file name" - Vector Design Tool
+        javax.swing.SwingUtilities.invokeLater(new Gui("Vector Design Tool"));
     }
 }
+
 
