@@ -12,7 +12,7 @@ import java.nio.file.Paths;
 /**
  *
  * @authors Group_010 - Daniel Baharvand, James Dick, Jai Hunt, Jovi Lee
- * @version 2.0
+ * @version 3.0
  */
 public class Gui extends JFrame implements ActionListener, Runnable {
 
