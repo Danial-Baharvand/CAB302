@@ -4,7 +4,10 @@ import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  *
@@ -21,6 +24,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     private JInternalFrame colorWindow;
     private JInternalFrame historyWindow;
     private JInternalFrame utilWindow;
+    private JColorChooser colors;
     private Type selectBtn;
 
     static String tempVEC="";
@@ -148,7 +152,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
 
     private JInternalFrame createColorWindow(){
         colorWindow = new JInternalFrame("Color");
-        JColorChooser colors= new JColorChooser(Color.BLACK);
+        colors= new JColorChooser(Color.BLACK);
         colors.setPreviewPanel(new JPanel());
         //Setting window parameters
         colorWindow.setSize(600, 250);
@@ -208,11 +212,23 @@ public class Gui extends JFrame implements ActionListener, Runnable {
 
     class saveAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
+            String saveFilePath;
             JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
             int returnValue = jfc.showSaveDialog(null);
             if (returnValue == JFileChooser.APPROVE_OPTION) {
                 File selectedFile = jfc.getSelectedFile();
                 System.out.println(selectedFile.getAbsolutePath());
+                if(!selectedFile.getAbsolutePath().toLowerCase().endsWith(".vec")){
+                    saveFilePath=selectedFile.getAbsolutePath()+".vec";
+                }else{
+                    saveFilePath=selectedFile.getAbsolutePath();
+                }
+                try (Writer writer = new BufferedWriter(new OutputStreamWriter(
+                        new FileOutputStream(saveFilePath), StandardCharsets.US_ASCII))) {
+                    writer.write(tempVEC);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }
         }
     }
@@ -225,7 +241,13 @@ public class Gui extends JFrame implements ActionListener, Runnable {
                 File selectedFile = jfc.getSelectedFile();
                 System.out.println(selectedFile.getAbsolutePath());
                 Gui.canvas.getGraphics().dispose();
-                Load.load(selectedFile.getAbsolutePath());
+                //Load.load(selectedFile.getAbsolutePath());
+                try {
+                    tempVEC=new String(Files.readAllBytes(Paths.get(selectedFile.getAbsolutePath())), StandardCharsets.US_ASCII);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+                canvas.repaint();
             }
         }
     }
@@ -309,8 +331,10 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     class polEndAction implements ActionListener{
         public void actionPerformed(ActionEvent e) {
             System.out.print("end button pressedX"+Shapes.pressedX+"\n");
-            if(Shapes.polX.size()>0) Shapes.polygon(Shapes.polX.get(0),Shapes.polY.get(0));
+            //if(Shapes.polX.size()>0) Shapes.polygon(Shapes.polX.get(0),Shapes.polY.get(0));
+            Shapes.polygon();
             if(Shapes.readyToDraw)canvas.repaint();
+            colors.setEnabled(true);
         }
     }
 
@@ -327,7 +351,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     }
 
 
-    class canvasAction implements MouseListener {
+    class canvasAction extends MouseAdapter {
         @Override
         public void mouseClicked(MouseEvent e) {
             if (selectBtn == Type.PLOT) {
@@ -341,62 +365,24 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             } else if (selectBtn == Type.ELLIPSE) {
                 Shapes.saveShape(e.getX(),e.getY(),"ELLIPSE");
             } else if (selectBtn == Type.POLYGON) {
-                Shapes.polygon(e.getX(), e.getY());
+                colors.setEnabled(false);
+                Shapes.polAdd(e.getX(), e.getY());
             }
             if(Shapes.readyToDraw)canvas.repaint();
 
         }
-
-        @Override
-        public void mousePressed(MouseEvent e) {
-
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent e) {
-
-        }
-
-        @Override
-        public void mouseEntered(MouseEvent e) {
-
-        }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
-
-        }
     }
 
-    class ResizeListener implements ComponentListener {
+    class ResizeListener extends ComponentAdapter {
         public void componentResized(ComponentEvent e) {
             historyWindow.setLocation(getContentPane().getBounds().getSize().width - 300,50);
             colorWindow.setLocation(getContentPane().getBounds().getSize().width - 600,getContentPane().getBounds().getSize().height - 250);
             utilWindow.setLocation(0, getContentPane().getBounds().getSize().height - 80);
-            //System.out.println(getContentPane().getBounds().getSize().width);
-            //System.out.println(getContentPane().getBounds().getSize().height);
-            //Load.load("example1.vec" );
-            //paint(Shapes.g);
-
-
-        }
-
-
-        @Override
-        public void componentMoved(ComponentEvent e) {
-            //Load.load("example1.vec" );
-        }
-
-        @Override
-        public void componentShown(ComponentEvent e) {
-            //Load.load("example1.vec" );
-        }
-
-        @Override
-        public void componentHidden(ComponentEvent e) {
-            //Load.load("example1.vec" );
         }
     }
+
+            //Shapes.polygon();
+            //if(Shapes.readyToDraw)canvas.repaint();
 
     @Override
     public void actionPerformed(ActionEvent e) {

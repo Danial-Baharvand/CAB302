@@ -48,9 +48,9 @@ import java.util.Scanner;
                     break;
                 case "POLYGON":
                     while (sc.hasNextFloat()) {
-                        Shapes.polygon(intCanvas(sc.next()), intCanvas(sc.next()));
+                        //Shapes.polygon(intCanvas(sc.next()), intCanvas(sc.next()));
                     }
-                    Shapes.polygon(Shapes.pressedX, Shapes.pressedY);
+                    //Shapes.polygon(Shapes.pressedX, Shapes.pressedY);
                     break;
 
             }

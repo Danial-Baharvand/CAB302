@@ -7,10 +7,6 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 class MyPanel extends JPanel {
-    //Scanner scanner=new Scanner(Gui.tempVEC);
-    //Scanner scanner=new Scanner("PLOT 0.539 0.404 \n" +
-      //      "PLOT 0.57 0.47 \n" +
-       //     "PLOT 0.57 0.47");
     Scanner scanner;
     static String tempVEC;
     public void paintComponent(Graphics g) {
@@ -19,29 +15,12 @@ class MyPanel extends JPanel {
         String drawingTool = null;
         // pass the path to the file as a parameter
         //File file = new File("example1.vec");
-
-
         scanner = new Scanner(Gui.tempVEC);
 
-        //String sc=Gui.tempVEC;
-
-        //if(Shapes.polX.size()>0) Shapes.polygon(Shapes.polX.get(0),Shapes.polY.get(0));
-        //Gui.canvas.repaint();
         while (scanner.hasNext()) {
             if (scanner.hasNext())drawingTool = scanner.next();
             if(!Shapes.readyToDraw){
                 Shapes.pressedX = -3;
-
-                Shapes.polX.clear();
-                Shapes.polY.clear();
-                Shapes.polCount=0;
-                //Shapes.pressedY = -1;
-                //Shapes.polCount = 1;
-               // Shapes.polLastX = -1;
-                //Shapes.polLastY = -1;
-                //Shapes.polX.clear();
-                //Shapes.polY.clear();
-                //Shapes.History.clear();
             }
             switch (drawingTool) {
                 case "PLOT":
@@ -73,9 +52,14 @@ class MyPanel extends JPanel {
                     break;
                 case "POLYGON":
                     while (scanner.hasNextFloat()) {
-                        Shapes.polygon(intCanvas(scanner.next()), intCanvas(scanner.next()),g);
+                        Shapes.polAddLoad(intCanvas(scanner.next()), intCanvas(scanner.next()));
+                        System.out.print("tempvec= "+Gui.tempVEC);
                     }
-                    if(Shapes.polX.size()>0) Shapes.polygon(Shapes.polX.get(0), Shapes.polY.get(0),g);
+                    //if(Shapes.polX.size()>0) Shapes.polygon(Shapes.polX.get(0), Shapes.polY.get(0),g);
+                    if(Shapes.readyToDraw) Shapes.polygon(g);
+
+                    System.out.print(Shapes.polX.toString());
+                    System.out.print(Shapes.polY.toString());
                     break;
 
             }

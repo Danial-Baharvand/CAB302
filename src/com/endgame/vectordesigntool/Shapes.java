@@ -6,13 +6,17 @@ import java.util.ArrayList;
 class Shapes {
     //pressedX is the first location, x is second
     static int polCount = 0;
+    static int loadPolCount = 0;
     static int polLastX = -1;
     static int polLastY = -1;
     static ArrayList<Integer> polX = new ArrayList<Integer>();
     static ArrayList<Integer> polY = new ArrayList<Integer>();
+    static ArrayList<Integer> loadPolX = new ArrayList<Integer>();
+    static ArrayList<Integer> loadPolY = new ArrayList<Integer>();
     private static Graphics canvasG = Gui.canvas.getGraphics();
 
     static boolean readyToDraw=false;
+    static boolean polComp=false;
     static int pressedX = -1;
     static int pressedY = -1;
     static ArrayList<String> History = new ArrayList<String>();
@@ -56,27 +60,17 @@ class Shapes {
         }
     }
 
-    static void polygon(int x,int y,Graphics g) {
-        polX.add(x);
-        polY.add(y);
-        polCount++;
-        readyToDraw=false;
-         if (polX.size()>1 && x == polX.get(0) && y == polY.get(0)){
-             readyToDraw=true;
-            g.drawPolygon(polX.stream().mapToInt(Integer::intValue).toArray(),polY.stream().mapToInt(Integer::intValue).toArray(),polCount);
-            polX.clear();
-            polY.clear();
-            polCount = 0;
+    static void polygon(Graphics g) {
+        if (loadPolX.size()>1){
+            readyToDraw=true;
+            g.drawPolygon(loadPolX.stream().mapToInt(Integer::intValue).toArray(),loadPolY.stream().mapToInt(Integer::intValue).toArray(),loadPolCount);
+            loadPolX.clear();
+            loadPolY.clear();
+            loadPolCount = 0;
         }
     }
-    static void polygon(int x,int y) {
-        System.out.print(x+" "+ y+"\n");
-        System.out.print("pressedX="+pressedX+"\n");
-        readyToDraw=false;
-        polX.add(x);
-        polY.add(y);
-        polCount++;
-        if (polCount>1 && x == polX.get(0) && y == polY.get(0)){
+    static void polygon() {
+        if (polCount>1){
             History.add("POLYGON");
             for(int i = 0; i < polCount; i++){
                 History.add(String.valueOf((float)polX.get(i)/Gui.canvSize));
@@ -90,7 +84,22 @@ class Shapes {
             polX.clear();
             polY.clear();
             polCount = 0;
+            polComp=false;
         }
+    }
+    static void polAdd(int x, int y){
+        System.out.print(x+" "+ y+"\n");
+        readyToDraw=false;
+        polX.add(x);
+        polY.add(y);
+        polCount++;
+    }
+    static void polAddLoad(int x, int y){
+        System.out.print(x+" "+ y+"\n");
+        loadPolX.add(x);
+        loadPolY.add(y);
+        loadPolCount++;
+        readyToDraw=true;
     }
 
     static void addHisTOTemp(){
