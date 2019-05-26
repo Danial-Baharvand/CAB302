@@ -308,7 +308,9 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     }
     class polEndAction implements ActionListener{
         public void actionPerformed(ActionEvent e) {
-            Shapes.polygon(Shapes.pressedX,Shapes.pressedY);
+            System.out.print("end button pressedX"+Shapes.pressedX+"\n");
+            if(Shapes.polX.size()>0) Shapes.polygon(Shapes.polX.get(0),Shapes.polY.get(0));
+            if(Shapes.readyToDraw)canvas.repaint();
         }
     }
 
@@ -329,17 +331,19 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         @Override
         public void mouseClicked(MouseEvent e) {
             if (selectBtn == Type.PLOT) {
-                Shapes.plot(e.getX(), e.getY());
+                Shapes.saveShape(e.getX(),e.getY(),"PLOT");
             } else if (selectBtn == Type.LINE) {
-                Shapes.line(e.getX(), e.getY());
+                //Shapes.line(e.getX(), e.getY());
+                Shapes.saveShape(e.getX(),e.getY(),"LINE");
             } else if (selectBtn == Type.RECTANGLE) {
-                Shapes.rect(e.getX(), e.getY());
+                //Shapes.rect(e.getX(), e.getY());
+                Shapes.saveShape(e.getX(),e.getY(),"RECTANGLE");
             } else if (selectBtn == Type.ELLIPSE) {
-                Shapes.ellipse(e.getX(), e.getY());
+                Shapes.saveShape(e.getX(),e.getY(),"ELLIPSE");
             } else if (selectBtn == Type.POLYGON) {
                 Shapes.polygon(e.getX(), e.getY());
             }
-            canvas.repaint();
+            if(Shapes.readyToDraw)canvas.repaint();
 
         }
 

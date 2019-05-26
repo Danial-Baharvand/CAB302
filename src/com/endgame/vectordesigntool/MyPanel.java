@@ -25,15 +25,29 @@ class MyPanel extends JPanel {
 
         //String sc=Gui.tempVEC;
 
-
+        //if(Shapes.polX.size()>0) Shapes.polygon(Shapes.polX.get(0),Shapes.polY.get(0));
+        //Gui.canvas.repaint();
         while (scanner.hasNext()) {
             if (scanner.hasNext())drawingTool = scanner.next();
+            if(!Shapes.readyToDraw){
+                Shapes.pressedX = -3;
 
+                Shapes.polX.clear();
+                Shapes.polY.clear();
+                Shapes.polCount=0;
+                //Shapes.pressedY = -1;
+                //Shapes.polCount = 1;
+               // Shapes.polLastX = -1;
+                //Shapes.polLastY = -1;
+                //Shapes.polX.clear();
+                //Shapes.polY.clear();
+                //Shapes.History.clear();
+            }
             switch (drawingTool) {
                 case "PLOT":
                     if (scanner.hasNextFloat()) {
                         Shapes.plot(intCanvas(scanner.next()), intCanvas(scanner.next()),g);
-                        System.out.print(Gui.tempVEC);
+                        //System.out.print(Gui.tempVEC);
                     }
                     break;
                 case "LINE":
@@ -61,7 +75,7 @@ class MyPanel extends JPanel {
                     while (scanner.hasNextFloat()) {
                         Shapes.polygon(intCanvas(scanner.next()), intCanvas(scanner.next()),g);
                     }
-                    Shapes.polygon(Shapes.pressedX, Shapes.pressedY,g);
+                    if(Shapes.polX.size()>0) Shapes.polygon(Shapes.polX.get(0), Shapes.polY.get(0),g);
                     break;
 
             }

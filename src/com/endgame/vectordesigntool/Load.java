@@ -23,26 +23,26 @@ import java.util.Scanner;
             switch (drawingTool) {
                 case "PLOT":
                     if (sc.hasNext()) {
-                        Shapes.plot(intCanvas(sc.next()), intCanvas(sc.next()));
+                        Shapes.saveShape(intCanvas(sc.next()), intCanvas(sc.next()),"PLOT");
                     }
                 case "LINE":
                     for (int i = 0; i < 2; i++) {
                         if (sc.hasNext()) {
-                            Shapes.line(intCanvas(sc.next()), intCanvas(sc.next()));
+                            Shapes.saveShape(intCanvas(sc.next()), intCanvas(sc.next()),"LINE");
                         }
                     }
                     break;
                 case "RECTANGLE":
                     for (int i = 0; i < 2; i++) {
                         if (sc.hasNext()) {
-                            Shapes.rect(intCanvas(sc.next()), intCanvas(sc.next()));
+                            Shapes.saveShape(intCanvas(sc.next()), intCanvas(sc.next()),"RECTANGLE");
                         }
                     }
                     break;
                 case "ELLIPSE":
                     for (int i = 0; i < 2; i++) {
                         if (sc.hasNext()) {
-                            Shapes.ellipse(intCanvas(sc.next()), intCanvas(sc.next()));
+                            Shapes.saveShape(intCanvas(sc.next()), intCanvas(sc.next()),"ELLIPSE");
                         }
                     }
                     break;
