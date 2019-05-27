@@ -21,6 +21,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     private double HEIGHT = screenSize.getHeight();
     private JButton polEndButton;
     private JButton gridBtn;
+    private JButton enterBtn;
     private JInternalFrame shapesWindow;
     private JInternalFrame colorWindow;
     private JInternalFrame historyWindow;
@@ -212,7 +213,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         JPanel xPanel = new JPanel(new BorderLayout()); //panel for x option
         JPanel yPanel = new JPanel(new BorderLayout()); //panel for y option
         //Button
-        JButton enterBtn = new JButton("Enter");
+        enterBtn = new JButton("Enter");
         //Text boxes
         JTextField xTextField = new JTextField(10);
         JTextField yTextField = new JTextField(10);
@@ -232,6 +233,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         parent.add(xPanel, BorderLayout.PAGE_START);
         parent.add(yPanel, BorderLayout.CENTER);
         parent.add(enterBtn, BorderLayout.PAGE_END);
+        enterBtn.addActionListener(new enterAction());
         //Display parameters
         parent.pack();
         parent.setVisible(true);
@@ -384,6 +386,15 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         public void actionPerformed(ActionEvent e) {
             if(e.getSource() == gridBtn){
                 gridWin();
+            }
+        }
+    }
+
+    class enterAction implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            if(e.getSource() == enterBtn){
+                Grid grid = new Grid();
+                //grid.
             }
         }
     }
