@@ -3,7 +3,7 @@ package com.endgame.vectordesigntool;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
-
+//THIS CLASS IS NO LONGER USED
 //Implements Load
  class Load {
     static void load(String selectedFile) {

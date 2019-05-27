@@ -2,9 +2,9 @@ package com.endgame.vectordesigntool;
 
 import java.awt.*;
 import java.util.ArrayList;
-// implement shapes
+//THIS CLASS SAVES THE MOUSE CLICKS TO THE TEMP FILE
+//ADDITIONAL COMMENTS WILL BE ADDED LATER
 class Shapes {
-    //pressedX is the first location, x is second
     static int polCount = 0;
     static int loadPolCount = 0;
     static int polLastX = -1;
@@ -14,6 +14,9 @@ class Shapes {
     static ArrayList<Integer> loadPolX = new ArrayList<Integer>();
     static ArrayList<Integer> loadPolY = new ArrayList<Integer>();
     private static Graphics canvasG = Gui.canvas.getGraphics();
+    static Color penColor = Color.black;
+    static Color fillColor=null;
+
 
     static boolean readyToDraw=false;
     static boolean polComp=false;
@@ -43,6 +46,11 @@ class Shapes {
         } else {
             if(x < pressedX) x = x ^ pressedX ^ (pressedX = x);
             if(y < pressedY) y = y ^ pressedY ^ (pressedY = y);
+            if(fillColor !=null){
+                g.setColor(fillColor);
+                g.fillRect(pressedX, pressedY, x-pressedX, y-pressedY);
+                g.setColor(penColor);
+            }
             g.drawRect(pressedX, pressedY, x-pressedX, y-pressedY);
             pressedX = -1;
         }
@@ -55,6 +63,11 @@ class Shapes {
         } else {
             if(x < pressedX) x = x ^ pressedX ^ (pressedX = x);
             if(y < pressedY) y = y ^ pressedY ^ (pressedY = y);
+            if(fillColor !=null){
+                g.setColor(fillColor);
+                g.fillOval(pressedX, pressedY, x-pressedX, y-pressedY);
+                g.setColor(penColor);
+            }
             g.drawOval(pressedX, pressedY, x-pressedX, y-pressedY);
             pressedX = -1;
         }
@@ -63,6 +76,11 @@ class Shapes {
     static void polygon(Graphics g) {
         if (loadPolX.size()>1){
             readyToDraw=true;
+            if(fillColor !=null){
+                g.setColor(fillColor);
+                g.fillPolygon(loadPolX.stream().mapToInt(Integer::intValue).toArray(),loadPolY.stream().mapToInt(Integer::intValue).toArray(),loadPolCount);
+                g.setColor(penColor);
+            }
             g.drawPolygon(loadPolX.stream().mapToInt(Integer::intValue).toArray(),loadPolY.stream().mapToInt(Integer::intValue).toArray(),loadPolCount);
             loadPolX.clear();
             loadPolY.clear();
