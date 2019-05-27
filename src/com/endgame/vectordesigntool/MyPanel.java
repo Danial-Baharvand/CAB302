@@ -61,7 +61,6 @@ class MyPanel extends JPanel {
                     System.out.print(Shapes.polX.toString());
                     System.out.print(Shapes.polY.toString());
                     break;
-
             }
         }
     }

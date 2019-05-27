@@ -23,7 +23,6 @@ class Shapes {
 
     static void plot(int x,int y,Graphics g) {
         g.drawLine(x, y, x, y);
-
     }
 
     static void line(int x,int y,Graphics g) {
@@ -69,6 +68,7 @@ class Shapes {
             loadPolCount = 0;
         }
     }
+
     static void polygon() {
         if (polCount>1){
             History.add("POLYGON");
@@ -87,6 +87,7 @@ class Shapes {
             polComp=false;
         }
     }
+
     static void polAdd(int x, int y){
         System.out.print(x+" "+ y+"\n");
         readyToDraw=false;
@@ -122,7 +123,7 @@ class Shapes {
         History.clear();
     }
     static void saveShape(int x,int y, String shapeName) {
-        if(shapeName=="PLOT") {
+        if(shapeName == "PLOT") {
             addToHisAndTemp (x, y, shapeName);readyToDraw=true;
         } else if (pressedX < 0){
             pressedX = x;

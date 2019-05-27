@@ -27,10 +27,10 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     private JColorChooser colors;
     private Type selectBtn;
 
-    static String tempVEC="";
+    static String tempVEC = "";
     protected static JPanel canvas;
     static final int canvSize = 1000;
-    enum Type {PLOT, LINE, RECTANGLE, ELLIPSE, POLYGON}
+    enum Type {PLOT, LINE, RECTANGLE, ELLIPSE, POLYGON, ZOOM, GRID}
     static Graphics canvasG;
 
     /**
@@ -322,7 +322,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     }
     class polygonAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
-            selectBtn =Type.POLYGON;
+            selectBtn = Type.POLYGON;
             Shapes.pressedX = -1;
             Shapes.pressedY = -1;
             polEndButton.setEnabled(true);
@@ -340,13 +340,16 @@ public class Gui extends JFrame implements ActionListener, Runnable {
 
     class zoomAction implements ActionListener {
         public void actionPerformed (ActionEvent e) {
-            //
+            polEndButton.setEnabled(false);
+            selectBtn = Type.ZOOM;
         }
     }
 
     class gridAction implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            //
+            polEndButton.setEnabled(false);
+            selectBtn = Type.GRID;
+
         }
     }
 

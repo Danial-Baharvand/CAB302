@@ -1,5 +1,6 @@
 package com.endgame.vectordesigntool;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -52,7 +53,6 @@ import java.util.Scanner;
                     }
                     //Shapes.polygon(Shapes.pressedX, Shapes.pressedY);
                     break;
-
             }
         }
     }
