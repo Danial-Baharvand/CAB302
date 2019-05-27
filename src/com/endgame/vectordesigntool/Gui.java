@@ -20,6 +20,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     private double WIDTH = screenSize.getWidth();
     private double HEIGHT = screenSize.getHeight();
     private JButton polEndButton;
+    private JButton gridBtn;
     private JInternalFrame shapesWindow;
     private JInternalFrame colorWindow;
     private JInternalFrame historyWindow;
@@ -190,7 +191,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         JPanel utilPanel = new JPanel(new GridLayout(1, 2));
         //Buttons
         JButton zoomBtn = new JButton(new ImageIcon("magnifyingGlass.png"));
-        JButton gridBtn = new JButton(new ImageIcon("grid.png"));
+        gridBtn = new JButton(new ImageIcon("grid.png"));
         //Setting utils parameters in window
         utilWindow.setSize(100, 80);
         utilWindow.setLocation(0, 600);
@@ -347,9 +348,11 @@ public class Gui extends JFrame implements ActionListener, Runnable {
 
     class gridAction implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            polEndButton.setEnabled(false);
-            selectBtn = Type.GRID;
-
+            if(e.getSource() == gridBtn){
+                Grid grid = new Grid();
+                grid.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                grid.setVisible(true);
+            }
         }
     }
 

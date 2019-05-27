@@ -1,5 +1,10 @@
 package com.endgame.vectordesigntool;
 
-public class Grid {
+import javax.swing.*;
 
+public class Grid extends JFrame {
+
+    public Grid() {
+        super("Grid Input");
+    }
 }
