@@ -205,6 +205,40 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         return utilWindow;
     }
 
+    private void gridWin(){
+        //Popup window
+        JFrame parent = new JFrame("Grid");
+        //Panels
+        JPanel xPanel = new JPanel(new BorderLayout()); //panel for x option
+        JPanel yPanel = new JPanel(new BorderLayout()); //panel for y option
+        //Button
+        JButton enterBtn = new JButton("Enter");
+        //Text boxes
+        JTextField xTextField = new JTextField(10);
+        JTextField yTextField = new JTextField(10);
+        //Text labels
+        JLabel xInput = new JLabel();
+        JLabel yInput = new JLabel();
+        //Setting parameters
+        xPanel.setLayout(new BoxLayout(xPanel, BoxLayout.Y_AXIS));
+        yPanel.setLayout(new BoxLayout(yPanel, BoxLayout.Y_AXIS));
+        xInput.setText("Please input the x coordinate: ");
+        yInput.setText("Please input the y coordinate: ");
+        //Adds
+        xPanel.add(xInput, BorderLayout.LINE_START);
+        xPanel.add(xTextField, BorderLayout.LINE_END);
+        yPanel.add(yInput, BorderLayout.LINE_START);
+        yPanel.add(yTextField, BorderLayout.LINE_END);
+        parent.add(xPanel, BorderLayout.PAGE_START);
+        parent.add(yPanel, BorderLayout.CENTER);
+        parent.add(enterBtn, BorderLayout.PAGE_END);
+        //Display parameters
+        parent.pack();
+        parent.setVisible(true);
+        parent.setResizable(false);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
     class exitAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
             System.exit(0);
@@ -349,9 +383,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     class gridAction implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             if(e.getSource() == gridBtn){
-                Grid grid = new Grid();
-                grid.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                grid.setVisible(true);
+                gridWin();
             }
         }
     }
