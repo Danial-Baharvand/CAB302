@@ -208,7 +208,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
 
     private void gridWin(){
         //Popup window
-        JFrame parent = new JFrame("Grid");
+        JFrame parent = new JFrame("Grid Input");
         //Panels
         JPanel xPanel = new JPanel(new BorderLayout()); //panel for x option
         JPanel yPanel = new JPanel(new BorderLayout()); //panel for y option
@@ -393,8 +393,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     class enterAction implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             if(e.getSource() == enterBtn){
-                Grid grid = new Grid();
-                //grid.
+
             }
         }
     }
