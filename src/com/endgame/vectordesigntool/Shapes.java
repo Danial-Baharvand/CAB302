@@ -26,6 +26,7 @@ class Shapes {
 
     static void plot(int x,int y,Graphics g) {
         g.drawLine(x, y, x, y);
+
     }
 
     static void line(int x,int y,Graphics g) {
@@ -126,7 +127,6 @@ class Shapes {
                 .replaceFirst(".$","");
         System.out.print(Gui.tempVEC);
     }
-
     static void addToHisAndTemp ( int x, int y, String shapeName){
         History.add(shapeName);
         if (shapeName !="PLOT") {
@@ -139,7 +139,6 @@ class Shapes {
         addHisTOTemp();
         History.clear();
     }
-
     static void saveShape(int x,int y, String shapeName) {
         if(shapeName=="PLOT") {
             addToHisAndTemp (x, y, shapeName);readyToDraw=true;
