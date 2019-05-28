@@ -34,7 +34,6 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     static final int canvSize = 1000;// canvas size can be changed form here
 
     /**
-     *
      * @param title
      * @throws HeadlessException when code that is dependent on keyboard, display or mouse is called in environment
      * that does not support any of these things.
@@ -42,7 +41,10 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     private Gui(String title) throws HeadlessException{
         super(title);
     }
-    // creates GUI
+
+    /**
+     * Create and setup a GUI with a height and width 80% of that of the screen
+     */
     private void createGUI(){
         double widthProp = 0.8;//windows width compared to screen size
         double heightProp = 0.8;//windows height compared to screen size
@@ -53,6 +55,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         addComponentListener(new ResizeListener());//add the resize listener to keep inner windows at correct location
         setVisible(true);//make things visible
     }
+
     //create the display
     private JDesktopPane display(){
         JDesktopPane bg = new JDesktopPane();// get a new JDesktopPane
@@ -76,6 +79,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         canvas.addMouseListener(new canvasAction());// add a listener for mouse clicks on canvas
         return canvas;
     }
+
     //creates the menu
     private JMenuBar createMenu(){
         JMenuBar bar = new JMenuBar();//get a Menu Bar
@@ -115,6 +119,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         history.addActionListener(new historyToggleAction());
         return bar;
     }
+
     //creates the shapes window
     private JInternalFrame createShapes(){
         shapesWindow = new JInternalFrame("Shapes");//get a new internal frame
@@ -147,6 +152,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         shapesWindow.setVisible(true);
         return shapesWindow;
     }
+
     //creates the color window
     private JInternalFrame createColorWindow(){
         colorWindow = new JInternalFrame("Color");// get a new internal frame
@@ -170,6 +176,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         colorWindow.add(noFillColorButton);
         return colorWindow;
     }
+
     //THIS SHOULD BE REMOVED IF WE DECIDE WE ARE NOT DOING THE HISTORY
     private JInternalFrame createHistoryWindow() {
         //History
@@ -191,6 +198,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         historyWindow.add(scrollWindow);
         return historyWindow;
     }
+
     //creates the utilities window
     private JInternalFrame createUtilWin(){
         //Separate utilities window for zoom and grid features
@@ -212,12 +220,14 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         utilWindow.setVisible(true);
         return utilWindow;
     }
+
     //menu exit
     class exitAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
             System.exit(0);
         }//exit successfully
     }
+
     //menu save
     class saveAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
@@ -243,6 +253,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             }
         }
     }
+
     //menu load
     class loadAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
@@ -262,11 +273,13 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             }
         }
     }
+
     class undoAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
           //implement undo
         }
     }
+
     //toggle visiblity of inner windows
     class shapesToggleAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
@@ -298,6 +311,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             } else historyWindow.setVisible(true);
         }
     }
+
     //set drawing pen shape, also disable polEndButton as that is only relevant to polygon
     //finally reset click history in case another shape was in the middle of being drawn
     class plotAction implements ActionListener{
@@ -309,6 +323,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
 
         }
     }
+
     class lineAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
             polEndButton.setEnabled(false);
@@ -317,6 +332,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             Shapes.pressedY = -1;
         }
     }
+
     class rectAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
             polEndButton.setEnabled(false);
@@ -325,6 +341,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             Shapes.pressedY = -1;
         }
     }
+
     class ellipseAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
             polEndButton.setEnabled(false);
@@ -343,6 +360,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             polEndButton.setEnabled(true);
         }
     }
+
     //finish the polygon and save it to temp, update the canvas
     class polEndAction implements ActionListener{
         public void actionPerformed(ActionEvent e) {
@@ -350,18 +368,21 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             if(Shapes.readyToDraw)canvas.repaint();
         }
     }
+
     //store the selected color in the JColorChooser in the temp file
     class penColorAction implements ActionListener{
         public void actionPerformed(ActionEvent e) {
             tempVEC = tempVEC + "PEN " + "#" + Integer.toHexString(colors.getColor().getRGB()).substring(2)+"\n";
         }
     }
+
     //store the selected fill color in the JColorChooser in the temp file
     class fillColorAction implements ActionListener{
         public void actionPerformed(ActionEvent e) {
             tempVEC = tempVEC + "FILL " + "#" + Integer.toHexString(colors.getColor().getRGB()).substring(2)+"\n";
         }
     }
+
     //insert FILL OFF command in temp to avoid filling the next shape
     class noFillColorAction implements ActionListener{
         public void actionPerformed(ActionEvent e) {
@@ -412,16 +433,23 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             utilWindow.setLocation(0, getContentPane().getBounds().getSize().height - 80);
         }
     }
+
     @Override
     public void actionPerformed(ActionEvent e) {
-
     }
 
+    /**
+     * Create and setup the GUI with all of it's containers and widgets
+     */
     @Override
     public void run() {
         createGUI();
     }
 
+    /**
+     * Launch a Vector Design Tool
+     * @param args
+     */
     public static void main(String[] args){
         javax.swing.SwingUtilities.invokeLater(new Gui("Vector Design Tool"));
     }
