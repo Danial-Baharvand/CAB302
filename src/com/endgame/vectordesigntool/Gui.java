@@ -16,7 +16,7 @@ import java.util.Arrays;
 /**
  *
  * @authors Group_010 - Daniel Baharvand, James Dick, Jai Hunt, Jovi Lee
- * @version 3.4
+ * @version 3.5
  */
 public class Gui extends JFrame implements ActionListener, Runnable {
     @Override
@@ -66,6 +66,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//exit gracefully
         setJMenuBar(createMenu());//create the menubar
         getContentPane().add(display());//add all contents (inside display) to frame
+
         addComponentListener(new ResizeListener());//add the resize listener to keep inner windows at correct location
         setVisible(true);//make things visible
     }
@@ -129,6 +130,8 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         shapes.addActionListener(new shapesToggleAction());
         toolColorChooser.addActionListener(new colorToggleAction());
         history.addActionListener(new historyToggleAction());
+        //bind undo to CTRL Z
+        undo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z,InputEvent.CTRL_DOWN_MASK));
         return bar;
     }
     //creates the shapes window
@@ -300,6 +303,11 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     class undoAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
           //implement undo
+            int endIndex = tempVEC.length()-2;//starts from temp lenghts -2 to avoid last \n
+            endIndex = tempVEC.lastIndexOf('\n', endIndex-1);//get the index of last character before last line
+            if(endIndex==-1){endIndex=0;}//for the last line
+            tempVEC=tempVEC.substring(0,endIndex);//update temp
+            repaint();//show the updated canvas
         }
     }
     //toggle visibility of inner windows
@@ -312,6 +320,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             }
         }
     }
+
 
     class colorToggleAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
@@ -488,6 +497,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
 
         }
     }
+
 
     @Override
     public void run() {
