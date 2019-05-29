@@ -2,18 +2,27 @@ package com.endgame.vectordesigntool;
 
 import javax.swing.*;
 import java.awt.*;
-
+import java.util.Arrays;
 import java.util.Scanner;
 //THIS CLASS READS FROM TEMP AND DRAWS THE SHAPES
 //ADDITIONAL COMMENTS WILL BE ADDED LATER
 class MyPanel extends JPanel {
-    Scanner scanner;
+    private Scanner scanner;
+    //all the painting has been implemented inside this method
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
-        String drawingTool = null;
-        scanner = new Scanner(Gui.tempVEC);
-
+        //reset pen and fill colors to defaults
+        Shapes.fillColor=null;
+        Shapes.penColor=Color.black;
+        Gui.model.clear();//clear menu items
+        Gui.model.addAll(Arrays.asList(Gui.tempVEC.split("\n")));//update menu items from the latest temp
+        String drawingTool = null;//stores the shape to be drawn with
+        if(Gui.selectedHistory<0){//if a history item is not selected
+            scanner = new Scanner(Gui.tempVEC);//read from the main temp
+        }else {
+            scanner = new Scanner(Gui.historyTempVEC);//read from the history temp
+        }
+        //read VEC instruction and draw to screen
         while (scanner.hasNext()) {
             if (scanner.hasNext())drawingTool = scanner.next();
             if(!Shapes.readyToDraw){
@@ -74,6 +83,7 @@ class MyPanel extends JPanel {
             }
         }
     }
+    //calculates correct coordinates for the VEC format based on the canvas size
     private static int intCanvas(String s){
         return (int)(Float.valueOf(s)*Gui.canvSize);
     }

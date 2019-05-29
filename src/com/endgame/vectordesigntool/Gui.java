@@ -1,6 +1,8 @@
 package com.endgame.vectordesigntool;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.*;
@@ -8,14 +10,20 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 
 /**
  *
  * @authors Group_010 - Daniel Baharvand, James Dick, Jai Hunt, Jovi Lee
- * @version 3.2
+ * @version 3.3
  */
 public class Gui extends JFrame implements ActionListener, Runnable {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+    }
+
     //initialising up our varriables
     enum Type {PLOT, LINE, RECTANGLE, ELLIPSE, POLYGON}//stores type of the shape
     private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();//getting user's resolution
@@ -27,11 +35,19 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     private JInternalFrame colorWindow;
     private JInternalFrame historyWindow;
     private JInternalFrame utilWindow;
+    //initialising history window buttons
+    private JButton cancelHistory;
+    private JButton confirmHistory;
     private JColorChooser colors;//initialising the colorChooser
     private Type selectBtn;//stores which shape is currently selected
     static String tempVEC="";//this string is usd as cache, the VEC instructions are saved here
+    static String historyTempVEC="";
     static JPanel canvas;// initialising the canvas
     static final int canvSize = 1000;// canvas size can be changed form here
+    static DefaultListModel model;//keeps the list items
+
+    JList<String> list;
+    static int selectedHistory=-2;
 
     /**
      *
@@ -154,7 +170,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         //buttons
         JButton penColorButton = new JButton("Set Pen Color");
         JButton fillColorButton = new JButton("Set Fill Color");
-        JButton noFillColorButton = new JButton("No Fill");
+        JButton noFillColorButton = new JButton("Fill Off");
         penColorButton.addActionListener((new penColorAction()));
         fillColorButton.addActionListener((new fillColorAction()));
         noFillColorButton.addActionListener((new noFillColorAction()));
@@ -170,25 +186,35 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         colorWindow.add(noFillColorButton);
         return colorWindow;
     }
-    //THIS SHOULD BE REMOVED IF WE DECIDE WE ARE NOT DOING THE HISTORY
+    //Creates the history windows to provide the ability to go back and forth in instructions
     private JInternalFrame createHistoryWindow() {
-        //History
-        String[] subject = {"shapesPanel.add(elButton)", " shapesPanel.add(recButto",
-                "hapesWindow.setSize(100, ", "   apesWindow.add(shapesPanel);", "   menuOpen = new JMenu(\"Open\" ",
-                " orChooser colors= new JColorChooser(bla ",
-                " Bar.setPreferredSize(new Dimen ", "Frame shapesWindow = new JInternalFram"};
-
+        model = new DefaultListModel();//holds histroy window items
+        model.addAll(Arrays.asList(tempVEC.split("\n")));//adds each line of tempVEC as an item in the list
+        list = new JList<>( model );//make a new JList with the model as its contents
+        list.addListSelectionListener(new myListSelectionListener());//add the listener for clicks on list items
+        // set up the history window
         historyWindow = new JInternalFrame("History");
-        JList<String> list = new JList<>(subject);
-        JScrollPane scrollWindow = new JScrollPane(list);
+        historyWindow.setLayout(new BorderLayout());//set to flow layout
+        //buttons
+        confirmHistory = new JButton("Confirm");
+        cancelHistory = new JButton("Cancel");
+        confirmHistory.addActionListener((new confirmHistoryAction()));
+        cancelHistory.addActionListener((new cancelHistoryAction()));
+        JScrollPane scrollWindow = new JScrollPane(list);//make a scrolling pane with list
         //Setting parameters
         scrollWindow.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         scrollWindow.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         historyWindow.setSize(300, 300);
-        System.out.println(getContentPane().getBounds().getSize().width);
         historyWindow.setVisible(true);
-        //Adding scrolling window
-        historyWindow.add(scrollWindow);
+        historyWindow.add(scrollWindow,BorderLayout.CENTER); //Adding scrolling window
+        //add the buttons
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(confirmHistory);
+        buttonPanel.add(cancelHistory);
+        historyWindow.add(buttonPanel,BorderLayout.SOUTH);
+        //disable the buttons
+        cancelHistory.setEnabled(false);
+        confirmHistory.setEnabled(false);
         return historyWindow;
     }
     //creates the utilities window
@@ -211,6 +237,14 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         utilWindow.add(utilPanel);
         utilWindow.setVisible(true);
         return utilWindow;
+    }
+    //resets the values of stored points for shapes
+    private void resetShapesCoordinates(){
+        Shapes.pressedX = -1;
+        Shapes.pressedY = -1;
+        Shapes.polX.clear();
+        Shapes.polY.clear();
+        Shapes.polCount=0;
     }
     //menu exit
     class exitAction implements ActionListener{
@@ -254,7 +288,8 @@ public class Gui extends JFrame implements ActionListener, Runnable {
                 Gui.canvas.getGraphics().dispose();// clear the canvas
                 try {
                     //load from file at selected location to the temp file with ASCII format
-                    tempVEC=new String(Files.readAllBytes(Paths.get(selectedFile.getAbsolutePath())), StandardCharsets.US_ASCII);
+                    Shapes.fillColor=null;//discord previos fill color
+                    tempVEC= Files.readString(Paths.get(selectedFile.getAbsolutePath()), StandardCharsets.US_ASCII);
                 } catch (IOException ex) {// catch IO exceptions
                     ex.printStackTrace();
                 }
@@ -267,7 +302,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
           //implement undo
         }
     }
-    //toggle visiblity of inner windows
+    //toggle visibility of inner windows
     class shapesToggleAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
             if(shapesWindow.isVisible())shapesWindow.setVisible(false);
@@ -304,8 +339,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         public void actionPerformed (ActionEvent e){
             polEndButton.setEnabled(false);
             selectBtn = Type.PLOT;
-            Shapes.pressedX = -1;
-            Shapes.pressedY = -1;
+            resetShapesCoordinates();
 
         }
     }
@@ -313,24 +347,21 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         public void actionPerformed (ActionEvent e){
             polEndButton.setEnabled(false);
             selectBtn = Type.LINE;
-            Shapes.pressedX = -1;
-            Shapes.pressedY = -1;
+            resetShapesCoordinates();
         }
     }
     class rectAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
             polEndButton.setEnabled(false);
             selectBtn = Type.RECTANGLE;
-            Shapes.pressedX = -1;
-            Shapes.pressedY = -1;
+            resetShapesCoordinates();
         }
     }
     class ellipseAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
             polEndButton.setEnabled(false);
             selectBtn = Type.ELLIPSE;
-            Shapes.pressedX = -1;
-            Shapes.pressedY = -1;
+            resetShapesCoordinates();
         }
     }
     //set drawing pen shape to polygon, also enable polEndButton to provide the ability to end the polygon
@@ -338,9 +369,8 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     class polygonAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
             selectBtn =Type.POLYGON;
-            Shapes.pressedX = -1;
-            Shapes.pressedY = -1;
             polEndButton.setEnabled(true);
+            resetShapesCoordinates();
         }
     }
     //finish the polygon and save it to temp, update the canvas
@@ -354,18 +384,43 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     class penColorAction implements ActionListener{
         public void actionPerformed(ActionEvent e) {
             tempVEC = tempVEC + "PEN " + "#" + Integer.toHexString(colors.getColor().getRGB()).substring(2)+"\n";
+            repaint();
         }
     }
     //store the selected fill color in the JColorChooser in the temp file
     class fillColorAction implements ActionListener{
         public void actionPerformed(ActionEvent e) {
             tempVEC = tempVEC + "FILL " + "#" + Integer.toHexString(colors.getColor().getRGB()).substring(2)+"\n";
+            repaint();
         }
     }
     //insert FILL OFF command in temp to avoid filling the next shape
     class noFillColorAction implements ActionListener{
         public void actionPerformed(ActionEvent e) {
             tempVEC = tempVEC + "FILL OFF\n";
+            repaint();
+        }
+
+    }
+    //confirm the selected stage of drawing
+    class confirmHistoryAction implements ActionListener{
+        public void actionPerformed(ActionEvent e) {
+            tempVEC = historyTempVEC+"\n";//set the main temp to the history temp
+            selectedHistory=-1;//reset the menu selected item
+            //disable buttons
+            cancelHistory.setEnabled(false);
+            confirmHistory.setEnabled(false);
+            repaint();//repaint to show updated list
+        }
+    }
+    //cancel the selected drawing stage and go back to the latest drawing
+    class cancelHistoryAction implements ActionListener{
+        public void actionPerformed(ActionEvent e) {
+           selectedHistory=-1;//reset the menu selected item
+            //disable buttons
+           cancelHistory.setEnabled(false);
+           confirmHistory.setEnabled(false);
+           repaint();//repaint to show updated list
         }
     }
 
@@ -397,7 +452,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             } else if (selectBtn == Type.ELLIPSE) {
                 Shapes.saveShape(e.getX(),e.getY(),"ELLIPSE");
             } else if (selectBtn == Type.POLYGON) {
-                Shapes.polAdd(e.getX(), e.getY());
+                Shapes.polAdd(e.getX(), e.getY());//adds a single point to the polygon
             }
             if(Shapes.readyToDraw)canvas.repaint();
 
@@ -412,9 +467,26 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             utilWindow.setLocation(0, getContentPane().getBounds().getSize().height - 80);
         }
     }
-    @Override
-    public void actionPerformed(ActionEvent e) {
+    //updates a secondary temp when a menu item is selected and shows the drawing at that stage
+    class myListSelectionListener implements ListSelectionListener {
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            if (!e.getValueIsAdjusting() && !list.isSelectionEmpty()) {//check if a menu item is properly selected
+                selectedHistory=list.getSelectedIndex();//save selected history menu item
+                System.out.println(selectedHistory);
+                //deleting the undoed instructions
+                int endIndex = -1;//starts from -1 and is increased for the number of desired characters
+                for (int i = 0; i <= selectedHistory; i++) {
+                    endIndex = tempVEC.indexOf('\n', endIndex+1);//get the index of the last character
+                }
+                historyTempVEC=tempVEC.substring(0, endIndex);//save the updated string to history temp
+                //enable buttons
+                cancelHistory.setEnabled(true);
+                confirmHistory.setEnabled(true);
+                repaint();//repaint so the user sees the changes on the canvas immediately
+            }
 
+        }
     }
 
     @Override
