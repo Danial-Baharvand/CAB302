@@ -2,31 +2,33 @@ package com.endgame.vectordesigntool;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
 
+import java.util.Scanner;
+//THIS CLASS READS FROM TEMP AND DRAWS THE SHAPES
+//ADDITIONAL COMMENTS WILL BE ADDED LATER
+
+/**
+ * This reads the corresponding coordinate points in the temp file and then implements the shapes
+ *
+ * @version 4.0
+ */
 class MyPanel extends JPanel {
     Scanner scanner;
-    static String tempVEC;
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         String drawingTool = null;
-        // pass the path to the file as a parameter
-        //File file = new File("example1.vec");
         scanner = new Scanner(Gui.tempVEC);
 
         while (scanner.hasNext()) {
             if (scanner.hasNext())drawingTool = scanner.next();
             if(!Shapes.readyToDraw){
-                Shapes.pressedX = -3;
+                Shapes.pressedX = -3; //Used to reset the stored initial point in case the window is moved
             }
             switch (drawingTool) {
                 case "PLOT":
                     if (scanner.hasNextFloat()) {
                         Shapes.plot(intCanvas(scanner.next()), intCanvas(scanner.next()),g);
-                        //System.out.print(Gui.tempVEC);
                     }
                     break;
                 case "LINE":
@@ -55,15 +57,28 @@ class MyPanel extends JPanel {
                         Shapes.polAddLoad(intCanvas(scanner.next()), intCanvas(scanner.next()));
                         System.out.print("tempvec= "+Gui.tempVEC);
                     }
-                    //if(Shapes.polX.size()>0) Shapes.polygon(Shapes.polX.get(0), Shapes.polY.get(0),g);
                     if(Shapes.readyToDraw) Shapes.polygon(g);
-
-                    System.out.print(Shapes.polX.toString());
-                    System.out.print(Shapes.polY.toString());
+                    break;
+                case "PEN":
+                    if (scanner.hasNext()) {
+                        Shapes.penColor=Color.decode(scanner.next());
+                        g.setColor(Shapes.penColor);
+                    }
+                    break;
+                case "FILL":
+                    if (scanner.hasNext()) {
+                        if (scanner.hasNext("OFF")){
+                            scanner.next();
+                            Shapes.fillColor=null;
+                        }else {
+                            Shapes.fillColor = Color.decode(scanner.next());
+                        }
+                    }
                     break;
             }
         }
     }
+
     private static int intCanvas(String s){
         return (int)(Float.valueOf(s)*Gui.canvSize);
     }
