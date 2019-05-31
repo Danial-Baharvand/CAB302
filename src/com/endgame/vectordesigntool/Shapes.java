@@ -129,7 +129,7 @@ class Shapes {
      *
      */
     static void polygon() {
-        if (polCount>1){
+        if (polCount > 1){
             History.add("POLYGON");
             for(int i = 0; i < polCount; i++){
                 History.add(String.valueOf((float)polX.get(i)/Gui.canvSize));
@@ -228,6 +228,4 @@ class Shapes {
             pressedX = -1;
         }
     }
-
-
 }

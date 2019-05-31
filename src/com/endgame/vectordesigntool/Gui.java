@@ -9,7 +9,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-
 /**
  *
  * @authors Group_010 - Daniel Baharvand, James Dick, Jai Hunt, Jovi Lee
@@ -28,6 +27,13 @@ public class Gui extends JFrame implements ActionListener, Runnable {
 
     private JButton polEndButton; //Button that finishes drawing the polygon
     private JButton enterBtn; //Button for the popup grid window confirming the users input
+
+    private JTextField xTextField;
+    private JTextField yTextField;
+    private String getXTextValue;
+    private String getYTextValue;
+    static int xAxis;
+    static int yAxis;
 
     static String tempVEC = ""; //This string is usd as cache, the VEC instructions are saved here
     static JPanel canvas;
@@ -264,8 +270,8 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         //Button
         enterBtn = new JButton("Enter");
         //Text boxes
-        JTextField xTextField = new JTextField(10);
-        JTextField yTextField = new JTextField(10);
+        xTextField = new JTextField(10);
+        yTextField = new JTextField(10);
         //Text labels
         JLabel xInput = new JLabel();
         JLabel yInput = new JLabel();
@@ -479,9 +485,19 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         }
     }
 
-    class enterAction implements ActionListener {
+    class enterAction extends Component implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-
+            try {
+                getXTextValue = xTextField.getText();
+                getYTextValue = yTextField.getText();
+                xAxis = Integer.parseInt(getXTextValue); //Convert string to int
+                yAxis = Integer.parseInt(getYTextValue); //Convert string to int
+            } catch (NumberFormatException exception) {
+                JOptionPane.showMessageDialog(this, "Please input a positive integer", "Input: Error", JOptionPane.ERROR_MESSAGE);
+            }
+            if (xAxis < 0 || yAxis < 0) {
+                JOptionPane.showMessageDialog(this, "Please input a positive integer", "Input: Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 

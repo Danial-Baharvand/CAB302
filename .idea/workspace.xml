@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2c7ec812-4634-47d2-aadb-c28ed94c8cff" name="Default Changelist" comment="added popup grid window">
-      <change afterPath="$PROJECT_DIR$/src/com/endgame/vectordesigntool/UnitTests.java" afterDir="false" />
+    <list default="true" id="2c7ec812-4634-47d2-aadb-c28ed94c8cff" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/com/endgame/vectordesigntool/Grid.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/assignment02/com/endgame/vectordesigntool/Gui.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/endgame/vectordesigntool/FileStorage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/endgame/vectordesigntool/FileStorage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/endgame/vectordesigntool/Gui.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/endgame/vectordesigntool/Gui.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/endgame/vectordesigntool/Load.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/endgame/vectordesigntool/MyPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/endgame/vectordesigntool/MyPanel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/endgame/vectordesigntool/Shapes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/endgame/vectordesigntool/Shapes.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/endgame/vectordesigntool/UnitTests.java" beforeDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="X:\cab302\assignment02\.idea\shelf/" />
@@ -27,33 +24,26 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/endgame/vectordesigntool/Gui.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5797">
-              <caret line="341" column="56" selection-start-line="341" selection-start-column="56" selection-end-line="341" selection-end-column="56" />
+            <state relative-caret-position="298">
+              <caret line="499" column="13" selection-start-line="499" selection-start-column="13" selection-end-line="499" selection-end-column="13" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#12475#12476#0" expanded="true" />
-                <element signature="e#12513#12514#0" expanded="true" />
-                <element signature="e#19285#19286#0" expanded="true" />
-                <element signature="e#19341#19342#0" expanded="true" />
-                <element signature="e#19543#19544#0" expanded="true" />
-                <element signature="e#19576#19577#0" expanded="true" />
-                <element signature="e#21282#21283#0" expanded="true" />
-                <element signature="e#21309#21310#0" expanded="true" />
-                <element signature="e#21354#21355#0" expanded="true" />
-                <element signature="e#21439#21440#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/com/endgame/vectordesigntool/UnitTests.java">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/endgame/vectordesigntool/Grid.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="7" column="2" lean-forward="true" selection-start-line="7" selection-start-column="2" selection-end-line="7" selection-end-column="2" />
+            <state relative-caret-position="170">
+              <caret line="13" column="26" selection-start-line="13" selection-start-column="26" selection-end-line="13" selection-end-column="26" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -61,12 +51,10 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/endgame/vectordesigntool/Shapes.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="9" column="3" lean-forward="true" selection-start-line="9" selection-start-column="3" selection-end-line="9" selection-end-column="15" />
+            <state relative-caret-position="270">
+              <caret line="107" column="30" selection-start-line="107" selection-start-column="16" selection-end-line="107" selection-end-column="30" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1056#1057#0" expanded="true" />
-                <element signature="e#1094#1095#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -75,12 +63,10 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/endgame/vectordesigntool/MyPanel.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="7" column="16" lean-forward="true" selection-start-line="7" selection-start-column="16" selection-end-line="7" selection-end-column="16" />
+            <state relative-caret-position="272">
+              <caret line="16" column="30" selection-start-line="16" selection-start-column="16" selection-end-line="16" selection-end-column="30" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#2932#2933#0" expanded="true" />
-                <element signature="e#2991#2992#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -114,6 +100,7 @@
       <find>display</find>
       <find>plot</find>
       <find>canvas</find>
+      <find>paintComponent</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -138,21 +125,22 @@
         <option value="$PROJECT_DIR$/src/gui/Gui.java" />
         <option value="$PROJECT_DIR$/src/com/endgame/vectordesigntool/Plot.java" />
         <option value="D:/Downloads/BruteForceMedianBasicCount.java" />
-        <option value="$PROJECT_DIR$/src/com/endgame/vectordesigntool/Grid.java" />
         <option value="$PROJECT_DIR$/src/com/endgame/vectordesigntool/Load.java" />
         <option value="$PROJECT_DIR$/src/com/endgame/vectordesigntool/FileStorage.java" />
-        <option value="$PROJECT_DIR$/src/com/endgame/vectordesigntool/Gui.java" />
-        <option value="$PROJECT_DIR$/src/com/endgame/vectordesigntool/Shapes.java" />
         <option value="$PROJECT_DIR$/src/com/endgame/vectordesigntool/MyPanel.java" />
         <option value="$PROJECT_DIR$/src/com/endgame/vectordesigntool/UnitTests.java" />
+        <option value="$PROJECT_DIR$/src/com/endgame/vectordesigntool/Shapes.java" />
+        <option value="$PROJECT_DIR$/src/com/endgame/vectordesigntool/GridException.java" />
+        <option value="$PROJECT_DIR$/src/com/endgame/vectordesigntool/Grid.java" />
+        <option value="$PROJECT_DIR$/src/com/endgame/vectordesigntool/Gui.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-12" />
-    <option name="y" value="-12" />
-    <option name="width" value="1035" />
-    <option name="height" value="819" />
+    <option name="x" value="14" />
+    <option name="y" value="6" />
+    <option name="width" value="1157" />
+    <option name="height" value="526" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -160,6 +148,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -182,14 +172,12 @@
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1559050290447" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1559287399091" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../zoomExample" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -348,14 +336,21 @@
       <option name="project" value="LOCAL" />
       <updated>1558970166025</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="some javadoc implementation">
+      <created>1559106647410</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1559106647411</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49945828" visible="true" weight="0.23400854" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49945828" visible="true" weight="0.24200426" />
       <window_info id="Structure" order="1" sideWeight="0.5005417" side_tool="true" weight="0.2553305" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -364,7 +359,7 @@
       <window_info id="Favorites" order="6" sideWeight="0.5005417" side_tool="true" weight="0.2553305" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.33044422" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.13542795" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.13542795" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -467,7 +462,8 @@
     <MESSAGE value="Ver 1.7 - Jovi's Branch&#10;&#10;Test push" />
     <MESSAGE value="Ver 1.7 - Jovi's Branch&#10;&#10;Test push + minor changes" />
     <MESSAGE value="added popup grid window" />
-    <option name="LAST_COMMIT_MESSAGE" value="added popup grid window" />
+    <MESSAGE value="some javadoc implementation" />
+    <option name="LAST_COMMIT_MESSAGE" value="some javadoc implementation" />
   </component>
   <component name="editorHistoryManager">
     <entry file="jar://$PROJECT_DIR$/../jdk-11.0.2/lib/src.zip!/java.desktop/javax/swing/JComponent.java" />
@@ -494,16 +490,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/endgame/vectordesigntool/Grid.java" />
-    <entry file="file://$PROJECT_DIR$/src/com/endgame/vectordesigntool/Load.java">
+    <entry file="file://$PROJECT_DIR$/src/com/endgame/vectordesigntool/Load.java" />
+    <entry file="file://$PROJECT_DIR$/src/com/endgame/vectordesigntool/UnitTests.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="25" column="90" lean-forward="true" selection-start-line="25" selection-start-column="90" selection-end-line="25" selection-end-column="90" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#2079#2080#0" expanded="true" />
-            <element signature="e#2138#2139#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="119">
+          <caret line="7" column="2" selection-start-line="7" selection-start-column="2" selection-end-line="7" selection-end-column="2" />
         </state>
       </provider>
     </entry>
@@ -517,54 +508,50 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/endgame/vectordesigntool/GridException.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="60" lean-forward="true" selection-start-line="5" selection-start-column="60" selection-end-line="5" selection-end-column="60" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/endgame/vectordesigntool/Shapes.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="9" column="3" lean-forward="true" selection-start-line="9" selection-start-column="3" selection-end-line="9" selection-end-column="15" />
+        <state relative-caret-position="270">
+          <caret line="107" column="30" selection-start-line="107" selection-start-column="16" selection-end-line="107" selection-end-column="30" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#1056#1057#0" expanded="true" />
-            <element signature="e#1094#1095#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/endgame/vectordesigntool/MyPanel.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" column="16" lean-forward="true" selection-start-line="7" selection-start-column="16" selection-end-line="7" selection-end-column="16" />
+        <state relative-caret-position="272">
+          <caret line="16" column="30" selection-start-line="16" selection-start-column="16" selection-end-line="16" selection-end-column="30" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#2932#2933#0" expanded="true" />
-            <element signature="e#2991#2992#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/endgame/vectordesigntool/Grid.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="13" column="26" selection-start-line="13" selection-start-column="26" selection-end-line="13" selection-end-column="26" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/endgame/vectordesigntool/Gui.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5797">
-          <caret line="341" column="56" selection-start-line="341" selection-start-column="56" selection-end-line="341" selection-end-column="56" />
+        <state relative-caret-position="298">
+          <caret line="499" column="13" selection-start-line="499" selection-start-column="13" selection-end-line="499" selection-end-column="13" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#12475#12476#0" expanded="true" />
-            <element signature="e#12513#12514#0" expanded="true" />
-            <element signature="e#19285#19286#0" expanded="true" />
-            <element signature="e#19341#19342#0" expanded="true" />
-            <element signature="e#19543#19544#0" expanded="true" />
-            <element signature="e#19576#19577#0" expanded="true" />
-            <element signature="e#21282#21283#0" expanded="true" />
-            <element signature="e#21309#21310#0" expanded="true" />
-            <element signature="e#21354#21355#0" expanded="true" />
-            <element signature="e#21439#21440#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/endgame/vectordesigntool/UnitTests.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" column="2" lean-forward="true" selection-start-line="7" selection-start-column="2" selection-end-line="7" selection-end-column="2" />
         </state>
       </provider>
     </entry>
