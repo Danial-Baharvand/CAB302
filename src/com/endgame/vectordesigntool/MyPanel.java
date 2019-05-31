@@ -22,15 +22,16 @@ class MyPanel extends JPanel {
         }else {
             scanner = new Scanner(Gui.historyTempVEC);//read from the history temp
         }
-        if(Gui.gridX>0){
-            g.setColor(Color.lightGray);
-            for (int i=0;i<Gui.canvSize/Gui.gridX;i++){
+        //draw grid if grid is enabled
+        if(Gui.gridX>0 &&Gui.gridY>0){
+            g.setColor(Color.lightGray);//set grid color
+            for (int i=0;i<Gui.canvSize/Gui.gridX;i++){//draw the vertical grid lines
                 g.drawLine(Gui.gridX*i, 0, Gui.gridX*i, Gui.canvSize);
             }
-            for (int i=0;i<Gui.canvSize/Gui.gridY;i++){
+            for (int i=0;i<Gui.canvSize/Gui.gridY;i++){//draw the horizantal grid lines
                 g.drawLine(0, Gui.gridY*i,Gui.canvSize , Gui.gridY*i);
             }
-            g.setColor(Shapes.penColor);
+            g.setColor(Shapes.penColor);//revert the color
         }
         //read VEC instruction and draw to screen
         while (scanner.hasNext()) {

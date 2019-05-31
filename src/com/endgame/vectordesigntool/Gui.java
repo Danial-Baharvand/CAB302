@@ -16,7 +16,7 @@ import java.util.Arrays;
 /**
  *
  * @authors Group_010 - Daniel Baharvand, James Dick, Jai Hunt, Jovi Lee
- * @version 3.5
+ * @version 3.7
  */
 public class Gui extends JFrame implements ActionListener, Runnable {
     @Override
@@ -386,7 +386,6 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     class polygonAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
             selectBtn =Type.POLYGON;
-            polEndButton.setEnabled(true);
             resetShapesCoordinates();
         }
     }
@@ -394,6 +393,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     class polEndAction implements ActionListener{
         public void actionPerformed(ActionEvent e) {
             Shapes.polygon();
+            polEndButton.setEnabled(false);
             if(Shapes.readyToDraw)canvas.repaint();
         }
     }
@@ -446,27 +446,36 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             //
         }
     }
-
+    //Opens the grid window
     class gridAction implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            gridWin();
+            if(gridX<0&&gridY<0) {//show the grid window if the grid is not enabled
+                gridWin();
+            }else {//remove the grid if grid is active
+                gridX=-1;
+                gridY=-1;
+                repaint();//show canvas witout grid
+            }
         }
     }
+    //Produces the grid when the desired grid size is entered and the Confirm button is pressed
     class enterAction implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             try {
-
-                gridX = Integer.parseInt(xTextField.getText()); //Convert string to int
-                gridY = Integer.parseInt(yTextField.getText()); //Convert string to int
-            } catch (NumberFormatException exception) {
-                JOptionPane.showMessageDialog(getContentPane(), "Please input a positive integer", "Input: Error", JOptionPane.ERROR_MESSAGE);
+                gridX = Integer.parseInt(xTextField.getText()); //get text input and convert string to int
+                gridY = Integer.parseInt(yTextField.getText()); //get text input and convert string to int
+            } catch (NumberFormatException exception) {//catch if not an integer
+                JOptionPane.showMessageDialog(getContentPane(), "Please input a positive integer",
+                        "Input: Error", JOptionPane.ERROR_MESSAGE);
             }
-            if (gridX < 0 || gridY < 0) {
-                JOptionPane.showMessageDialog(getContentPane(), "Please input a positive integer", "Input: Error", JOptionPane.ERROR_MESSAGE);
+            if (gridX <= 0 || gridY <= 0 || gridX>canvSize/2 ||gridY>canvSize/2) {//check valid range
+                JOptionPane.showMessageDialog(getContentPane(), "Please input an integer between 1 and "
+                        +String.valueOf(canvSize), "Input: Error", JOptionPane.ERROR_MESSAGE);
             }
-            repaint();
+            repaint();// show the grid
         }
     }
+    //make the grid window
     private void gridWin(){
         //Popup window
         JFrame parent = new JFrame("Grid Input");
@@ -474,7 +483,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         JPanel xPanel = new JPanel(new BorderLayout()); //panel for x option
         JPanel yPanel = new JPanel(new BorderLayout()); //panel for y option
         //Button
-        JButton enterBtn = new JButton("Enter");
+        JButton enterBtn = new JButton("Confirm");
         //Text boxes
         xTextField = new JTextField(10);
         yTextField = new JTextField(10);
@@ -508,21 +517,23 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     class canvasAction extends MouseAdapter {
         @Override
         public void mouseClicked(MouseEvent e) {
-            int x=e.getX();
-            int y=e.getY();
+            int x=e.getX();//get mouse click x
+            int y=e.getY();//get mouse click y
+            //set nearest x and y to integer infinity to make sure they are overwritten
             int nearestX=Integer.MAX_VALUE;
             int nearestY=Integer.MAX_VALUE;
-            if(gridX>0){
-                for (int i=0;i<canvSize/gridX;i++){
-                    if(Math.abs((gridX*i)-x)<Math.abs(nearestX-x)){
-                        nearestX=gridX*i;
+            if(gridX>0&&gridY>0){//if the grid is active
+                for (int i=0;i<canvSize/gridX;i++){// for each vertical grid line
+                    if(Math.abs((gridX*i)-x)<Math.abs(nearestX-x)){//compare click loaction with grid line
+                        nearestX=gridX*i;//store the nearest grid to the click loaction
                     }
                 }
-                for (int i=0;i<canvSize/gridY;i++){
-                    if(Math.abs((gridY*i)-y)<Math.abs(nearestY-y)){
-                        nearestY=gridY*i;
+                for (int i=0;i<canvSize/gridY;i++){// for each horizantal grid line
+                    if(Math.abs((gridY*i)-y)<Math.abs(nearestY-y)){//compare click loaction with grid line
+                        nearestY=gridY*i;//store the nearest grid to the click loaction
                     }
                 }
+                //swap original mouse click loaction with the closest grid point
                 x=nearestX;
                 y=nearestY;
             }
@@ -537,6 +548,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             } else if (selectBtn == Type.ELLIPSE) {
                 Shapes.saveShape(x,y,"ELLIPSE");
             } else if (selectBtn == Type.POLYGON) {
+                if(Shapes.polCount>1)polEndButton.setEnabled(true);
                 Shapes.polAdd(x, y);//adds a single point to the polygon
             }
             if(Shapes.readyToDraw)canvas.repaint();

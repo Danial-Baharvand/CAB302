@@ -76,7 +76,7 @@ class Shapes {
     }
     //draws a polygon
     static void polygon(Graphics g) {
-        if (polCount>2){// if there are at least 2 points in the polygon
+        if (loadPolCount>2){// if there are at least 2 points in the polygon
             readyToDraw=true;//enable drawing
             if(fillColor !=null){// check fill
                 g.setColor(fillColor);//set fill color
