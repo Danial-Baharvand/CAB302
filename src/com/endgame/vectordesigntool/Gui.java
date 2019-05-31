@@ -1,11 +1,13 @@
 package com.endgame.vectordesigntool;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -16,7 +18,7 @@ import java.util.Arrays;
 /**
  *
  * @authors Group_010 - Daniel Baharvand, James Dick, Jai Hunt, Jovi Lee
- * @version 3.7
+ * @version 3.8
  */
 public class Gui extends JFrame implements ActionListener, Runnable {
     @Override
@@ -43,12 +45,13 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     static String tempVEC="";//this string is usd as cache, the VEC instructions are saved here
     static String historyTempVEC="";
     static JPanel canvas;// initialising the canvas
-    static final int canvSize = 1000;// canvas size can be changed form here
+    static int canvSize = 1000;// canvas size can be changed form here
     static DefaultListModel model;//keeps the list items
-    static JTextField xTextField;
-    static JTextField yTextField;
-    static int gridX=-1;
-    static int gridY=-1;
+    static JTextField gridXField;//holds the horizontal size of the grid
+    static JTextField gridYField;//holds the vertical size of the grid
+    static JTextField bmpResField;//holds the user spesified resolution for the bitmap export
+    static int gridX=-1;//value of gridXField converted to integer, set to -1 to disable grid
+    static int gridY=-1;//value of gridYField converted to integer, set to -1 to disable grid
 
 
     JList<String> list;
@@ -78,7 +81,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     //create the display
     private JDesktopPane display(){
         JDesktopPane bg = new JDesktopPane();// get a new JDesktopPane
-        bg.setBackground(Color.BLACK);//set background color
+        bg.setBackground(Color.lightGray);//set background color
         //add contents
         bg.add(createColorWindow());
         bg.add(makeCanvas());
@@ -114,12 +117,14 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         JMenuItem toolColorChooser = new JMenuItem("Color Chooser");
         JMenuItem history = new JMenuItem("History");
         JMenuItem grid = new JMenuItem("Grid");
+        JMenuItem bmp = new JMenuItem("Save as BMP");
         //Setting menu parameters
-        bar.setBackground(Color.cyan);
+        bar.setBackground(Color.gray);
         bar.setPreferredSize(new Dimension(200, 20));
         //Adding menu functions
         bar.add(file);
         file.add(save);
+        file.add(bmp);
         file.add(load);
         file.add(exit);
         bar.add(edit);
@@ -130,7 +135,8 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         tools.add(history);
         tools.add(grid);
         //adding action listeners
-        save.addActionListener((new saveAction()));
+        save.addActionListener(new saveAction());
+        bmp.addActionListener(new bmpAction());
         load.addActionListener(new loadAction());
         undo.addActionListener(new undoAction());
         exit.addActionListener(new exitAction());
@@ -288,6 +294,12 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             }
         }
     }
+    //display the bmp window
+    class bmpAction implements ActionListener{
+        public void actionPerformed (ActionEvent e){
+            bmpWin();
+        }
+    }
     //menu load
     class loadAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
@@ -314,7 +326,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             int endIndex = tempVEC.length()-2;//starts from temp lenghts -2 to avoid last \n
             endIndex = tempVEC.lastIndexOf('\n', endIndex-1);//get the index of last character before last line
             if(endIndex==-1){endIndex=0;}//for the last line
-            tempVEC=tempVEC.substring(0,endIndex);//update temp
+            tempVEC=tempVEC.substring(0,endIndex)+"\n";//update temp
             repaint();//show the updated canvas
         }
     }
@@ -459,11 +471,11 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         }
     }
     //Produces the grid when the desired grid size is entered and the Confirm button is pressed
-    class enterAction implements ActionListener {
+    class gridEnterAction implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             try {
-                gridX = Integer.parseInt(xTextField.getText()); //get text input and convert string to int
-                gridY = Integer.parseInt(yTextField.getText()); //get text input and convert string to int
+                gridX = Integer.parseInt(gridXField.getText()); //get text input and convert string to int
+                gridY = Integer.parseInt(gridYField.getText()); //get text input and convert string to int
             } catch (NumberFormatException exception) {//catch if not an integer
                 JOptionPane.showMessageDialog(getContentPane(), "Please input a positive integer",
                         "Input: Error", JOptionPane.ERROR_MESSAGE);
@@ -473,6 +485,52 @@ public class Gui extends JFrame implements ActionListener, Runnable {
                         +String.valueOf(canvSize), "Input: Error", JOptionPane.ERROR_MESSAGE);
             }
             repaint();// show the grid
+        }
+    }
+    // saves a bitmap of the drawn image to the chosen loaction
+    class bmpEnterAction implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            int bmpRes = -1;//stores bitmap size
+            try {
+                bmpRes = Integer.parseInt(bmpResField.getText()); //get text input and convert string to int
+            } catch (NumberFormatException exception) {//catch if not an integer
+                JOptionPane.showMessageDialog(getContentPane(), "Please input a positive integer",
+                        "Input: Error", JOptionPane.ERROR_MESSAGE);
+            }
+            if (bmpRes < 1) {//check valid range
+                JOptionPane.showMessageDialog(getContentPane(), "Please enter a valid value "
+                        , "Input: Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                String saveFilePath;//stores save path
+                //get a new file chooser at home directory
+                JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+                int returnValue = jfc.showSaveDialog(null);//shows graphical interface, store user save loaction
+                if (returnValue == JFileChooser.APPROVE_OPTION) {//if selected
+                    File selectedFile = jfc.getSelectedFile();// get the selected file
+                    //if user specified file name doesn't end with .bmp (case insensitive), add it and get save path.
+                    if (!selectedFile.getAbsolutePath().toLowerCase().endsWith(".bmp")) {
+                        saveFilePath = selectedFile.getAbsolutePath() + ".bmp";
+                    } else {
+                        saveFilePath = selectedFile.getAbsolutePath();//get save path
+                    }
+                    MyPanel bmpPanel = new MyPanel();//get a ne MyPanel to draw on
+                    bmpPanel.setSize(bmpRes, bmpRes);//set the size based on the user input
+                    bmpPanel.setBackground(Color.WHITE);//set the canvas color
+                    int tempCanvSize = canvSize;//store orignal canvas size
+                    canvSize = bmpRes;//change canvas size to the user requested resolution
+                    //make a new, empty, buffered image for the image to be drawn to
+                    BufferedImage image = new BufferedImage(bmpRes, bmpRes, BufferedImage.TYPE_INT_RGB);
+                    Graphics g = image.getGraphics();//get the graphics of the buffered image
+                    bmpPanel.paint(g);//paint the drawing to the buffered image's graphic
+                    canvSize = tempCanvSize;//restore original canvas size
+                    try {
+                        ImageIO.write(image, "bmp", new File(saveFilePath));//save the image
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(getContentPane(), "Please ensure IO is availible to be written to",
+                                "IO: Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
         }
     }
     //make the grid window
@@ -485,8 +543,8 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         //Button
         JButton enterBtn = new JButton("Confirm");
         //Text boxes
-        xTextField = new JTextField(10);
-        yTextField = new JTextField(10);
+        gridXField = new JTextField(10);
+        gridYField = new JTextField(10);
         //Text labels
         JLabel xInput = new JLabel();
         JLabel yInput = new JLabel();
@@ -497,13 +555,40 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         yInput.setText("Please input the y coordinate: ");
         //Adds
         xPanel.add(xInput, BorderLayout.LINE_START);
-        xPanel.add(xTextField, BorderLayout.LINE_END);
+        xPanel.add(gridXField, BorderLayout.LINE_END);
         yPanel.add(yInput, BorderLayout.LINE_START);
-        yPanel.add(yTextField, BorderLayout.LINE_END);
+        yPanel.add(gridYField, BorderLayout.LINE_END);
         parent.add(xPanel, BorderLayout.PAGE_START);
         parent.add(yPanel, BorderLayout.CENTER);
         parent.add(enterBtn, BorderLayout.PAGE_END);
-        enterBtn.addActionListener(new enterAction());
+        enterBtn.addActionListener(new gridEnterAction());
+        //Display parameters
+        parent.pack();
+        parent.setVisible(true);
+        parent.setResizable(false);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+    //make the bmp window
+    private void bmpWin(){
+        //Popup window
+        JFrame parent = new JFrame("Grid Input");
+        //Panel
+        JPanel xPanel = new JPanel(new BorderLayout()); //panel for x option
+        //Button
+        JButton enterBtn = new JButton("Confirm");
+        //Text boxe
+        bmpResField = new JTextField(10);
+        //Text label
+        JLabel xInput = new JLabel();
+        //Setting parameters
+        xPanel.setLayout(new BoxLayout(xPanel, BoxLayout.Y_AXIS));
+        xInput.setText("Please input the desired resolution: ");
+        //Adds
+        xPanel.add(xInput, BorderLayout.LINE_START);
+        xPanel.add(bmpResField, BorderLayout.LINE_END);
+        parent.add(xPanel, BorderLayout.PAGE_START);
+        parent.add(enterBtn, BorderLayout.PAGE_END);
+        enterBtn.addActionListener(new bmpEnterAction());
         //Display parameters
         parent.pack();
         parent.setVisible(true);
