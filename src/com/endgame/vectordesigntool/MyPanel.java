@@ -22,6 +22,16 @@ class MyPanel extends JPanel {
         }else {
             scanner = new Scanner(Gui.historyTempVEC);//read from the history temp
         }
+        if(Gui.gridX>0){
+            g.setColor(Color.lightGray);
+            for (int i=0;i<Gui.canvSize/Gui.gridX;i++){
+                g.drawLine(Gui.gridX*i, 0, Gui.gridX*i, Gui.canvSize);
+            }
+            for (int i=0;i<Gui.canvSize/Gui.gridY;i++){
+                g.drawLine(0, Gui.gridY*i,Gui.canvSize , Gui.gridY*i);
+            }
+            g.setColor(Shapes.penColor);
+        }
         //read VEC instruction and draw to screen
         while (scanner.hasNext()) {
             if (scanner.hasNext())drawingTool = scanner.next();

@@ -45,6 +45,11 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     static JPanel canvas;// initialising the canvas
     static final int canvSize = 1000;// canvas size can be changed form here
     static DefaultListModel model;//keeps the list items
+    static JTextField xTextField;
+    static JTextField yTextField;
+    static int gridX=-1;
+    static int gridY=-1;
+
 
     JList<String> list;
     static int selectedHistory=-2;
@@ -107,7 +112,8 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         JMenuItem undo = new JMenuItem("Undo");
         JMenuItem shapes = new JMenuItem("Shapes");
         JMenuItem toolColorChooser = new JMenuItem("Color Chooser");
-        JMenuItem history = new JMenuItem("history");
+        JMenuItem history = new JMenuItem("History");
+        JMenuItem grid = new JMenuItem("Grid");
         //Setting menu parameters
         bar.setBackground(Color.cyan);
         bar.setPreferredSize(new Dimension(200, 20));
@@ -122,6 +128,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         tools.add(shapes);
         tools.add(toolColorChooser);
         tools.add(history);
+        tools.add(grid);
         //adding action listeners
         save.addActionListener((new saveAction()));
         load.addActionListener(new loadAction());
@@ -130,6 +137,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         shapes.addActionListener(new shapesToggleAction());
         toolColorChooser.addActionListener(new colorToggleAction());
         history.addActionListener(new historyToggleAction());
+        grid.addActionListener(new gridAction());
         //bind undo to CTRL Z
         undo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z,InputEvent.CTRL_DOWN_MASK));
         return bar;
@@ -441,27 +449,95 @@ public class Gui extends JFrame implements ActionListener, Runnable {
 
     class gridAction implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            //
+            gridWin();
         }
     }
+    class enterAction implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            try {
+
+                gridX = Integer.parseInt(xTextField.getText()); //Convert string to int
+                gridY = Integer.parseInt(yTextField.getText()); //Convert string to int
+            } catch (NumberFormatException exception) {
+                JOptionPane.showMessageDialog(getContentPane(), "Please input a positive integer", "Input: Error", JOptionPane.ERROR_MESSAGE);
+            }
+            if (gridX < 0 || gridY < 0) {
+                JOptionPane.showMessageDialog(getContentPane(), "Please input a positive integer", "Input: Error", JOptionPane.ERROR_MESSAGE);
+            }
+            repaint();
+        }
+    }
+    private void gridWin(){
+        //Popup window
+        JFrame parent = new JFrame("Grid Input");
+        //Panels
+        JPanel xPanel = new JPanel(new BorderLayout()); //panel for x option
+        JPanel yPanel = new JPanel(new BorderLayout()); //panel for y option
+        //Button
+        JButton enterBtn = new JButton("Enter");
+        //Text boxes
+        xTextField = new JTextField(10);
+        yTextField = new JTextField(10);
+        //Text labels
+        JLabel xInput = new JLabel();
+        JLabel yInput = new JLabel();
+        //Setting parameters
+        xPanel.setLayout(new BoxLayout(xPanel, BoxLayout.Y_AXIS));
+        yPanel.setLayout(new BoxLayout(yPanel, BoxLayout.Y_AXIS));
+        xInput.setText("Please input the x coordinate: ");
+        yInput.setText("Please input the y coordinate: ");
+        //Adds
+        xPanel.add(xInput, BorderLayout.LINE_START);
+        xPanel.add(xTextField, BorderLayout.LINE_END);
+        yPanel.add(yInput, BorderLayout.LINE_START);
+        yPanel.add(yTextField, BorderLayout.LINE_END);
+        parent.add(xPanel, BorderLayout.PAGE_START);
+        parent.add(yPanel, BorderLayout.CENTER);
+        parent.add(enterBtn, BorderLayout.PAGE_END);
+        enterBtn.addActionListener(new enterAction());
+        //Display parameters
+        parent.pack();
+        parent.setVisible(true);
+        parent.setResizable(false);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
 
     //based on the selected button send the click coordinates to be proccessed
     //the shape instruction will be saved to the temp file once the shape is complete
     class canvasAction extends MouseAdapter {
         @Override
         public void mouseClicked(MouseEvent e) {
+            int x=e.getX();
+            int y=e.getY();
+            int nearestX=Integer.MAX_VALUE;
+            int nearestY=Integer.MAX_VALUE;
+            if(gridX>0){
+                for (int i=0;i<canvSize/gridX;i++){
+                    if(Math.abs((gridX*i)-x)<Math.abs(nearestX-x)){
+                        nearestX=gridX*i;
+                    }
+                }
+                for (int i=0;i<canvSize/gridY;i++){
+                    if(Math.abs((gridY*i)-y)<Math.abs(nearestY-y)){
+                        nearestY=gridY*i;
+                    }
+                }
+                x=nearestX;
+                y=nearestY;
+            }
+
             if (selectBtn == Type.PLOT) {
-                Shapes.saveShape(e.getX(),e.getY(),"PLOT");
+                Shapes.saveShape(x,y,"PLOT");
             } else if (selectBtn == Type.LINE) {
-                //Shapes.line(e.getX(), e.getY());
-                Shapes.saveShape(e.getX(),e.getY(),"LINE");
+                Shapes.saveShape(x,y,"LINE");
             } else if (selectBtn == Type.RECTANGLE) {
                 //Shapes.rect(e.getX(), e.getY());
-                Shapes.saveShape(e.getX(),e.getY(),"RECTANGLE");
+                Shapes.saveShape(x,y,"RECTANGLE");
             } else if (selectBtn == Type.ELLIPSE) {
-                Shapes.saveShape(e.getX(),e.getY(),"ELLIPSE");
+                Shapes.saveShape(x,y,"ELLIPSE");
             } else if (selectBtn == Type.POLYGON) {
-                Shapes.polAdd(e.getX(), e.getY());//adds a single point to the polygon
+                Shapes.polAdd(x, y);//adds a single point to the polygon
             }
             if(Shapes.readyToDraw)canvas.repaint();
 
