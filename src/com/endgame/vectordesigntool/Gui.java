@@ -26,15 +26,11 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     private Type selectBtn; //Variable to store selected shape
 
     private JButton polEndButton; //Button that finishes drawing the polygon
-    private JButton enterBtn; //Button for the popup grid window confirming the users input
+    private JButton okBtn;
 
-    private JTextField xTextField;
-    private JTextField yTextField;
-    private String getXTextValue;
-    private String getYTextValue;
-    static int xAxis;
-    static int yAxis;
+    private JComboBox zoomComboBox;
 
+    static double zoomScale;
     static String tempVEC = ""; //This string is usd as cache, the VEC instructions are saved here
     static JPanel canvas;
     static final int canvSize = 1000; //canvas size can be changed from here
@@ -246,8 +242,8 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         //Panel
         JPanel utilPanel = new JPanel(new GridLayout(1, 2));
         //Buttons
-        JButton zoomBtn = new JButton(new ImageIcon("magnifyingGlass.png"));
         JButton gridBtn = new JButton(new ImageIcon("grid.png"));
+        JButton zoomBtn = new JButton(new ImageIcon("magnifyingGlass.png"));
         //Setting utils parameters in window
         utilWindow.setSize(100, 80);
         utilWindow.setLocation(0, 600);
@@ -255,40 +251,36 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         utilPanel.add(zoomBtn);
         utilPanel.add(gridBtn);
         zoomBtn.addActionListener(new zoomAction());
-        gridBtn.addActionListener(new gridAction());
+        //gridBtn.addActionListener(new gridAction());
         utilWindow.add(utilPanel);
         utilWindow.setVisible(true);
         return utilWindow;
     }
 
-    private void gridWin(){
+    private void zoomWin(){
         //Popup window
-        JFrame parent = new JFrame("Grid Input");
+        Integer[] zoomAmount = { 25, 50, 100, 200, 300, 400, 500 };
+        JFrame parent = new JFrame("Zoom Input");
         //Panels
-        JPanel xPanel = new JPanel(new BorderLayout()); //panel for x option
-        JPanel yPanel = new JPanel(new BorderLayout()); //panel for y option
+        JPanel zoomPanel = new JPanel(new BorderLayout()); //panel for zoom amount
         //Button
-        enterBtn = new JButton("Enter");
+        okBtn = new JButton("Ok"); //Ok button
         //Text boxes
-        xTextField = new JTextField(10);
-        yTextField = new JTextField(10);
+        zoomComboBox = new JComboBox(zoomAmount); //Enter texts
         //Text labels
-        JLabel xInput = new JLabel();
-        JLabel yInput = new JLabel();
+        JLabel input = new JLabel();
         //Setting parameters
-        xPanel.setLayout(new BoxLayout(xPanel, BoxLayout.Y_AXIS));
-        yPanel.setLayout(new BoxLayout(yPanel, BoxLayout.Y_AXIS));
-        xInput.setText("Please input the x coordinate: ");
-        yInput.setText("Please input the y coordinate: ");
+        zoomPanel.setLayout(new BoxLayout(zoomPanel, BoxLayout.Y_AXIS));
+        input.setText("Magnify by: ");
+        zoomComboBox.setSelectedIndex(2);
+        zoomComboBox.setPreferredSize(new Dimension(100, 20));
         //Adds
-        xPanel.add(xInput, BorderLayout.LINE_START);
-        xPanel.add(xTextField, BorderLayout.LINE_END);
-        yPanel.add(yInput, BorderLayout.LINE_START);
-        yPanel.add(yTextField, BorderLayout.LINE_END);
-        parent.add(xPanel, BorderLayout.PAGE_START);
-        parent.add(yPanel, BorderLayout.CENTER);
-        parent.add(enterBtn, BorderLayout.PAGE_END);
-        enterBtn.addActionListener(new enterAction());
+        zoomPanel.add(input, BorderLayout.LINE_START);
+        zoomPanel.add(zoomComboBox, BorderLayout.LINE_END);
+        parent.add(zoomPanel, BorderLayout.PAGE_START);
+        parent.add(okBtn, BorderLayout.PAGE_END);
+        zoomComboBox.addActionListener(this);
+        okBtn.addActionListener(new okAction());
         //Display parameters
         parent.pack();
         parent.setVisible(true);
@@ -467,7 +459,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     }
 
     //insert FILL OFF command in temp to avoid filling the next shape
-    class noFillColorAction implements ActionListener{
+    class noFillColorAction implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             tempVEC = tempVEC + "FILL OFF\n";
         }
@@ -475,31 +467,33 @@ public class Gui extends JFrame implements ActionListener, Runnable {
 
     class zoomAction implements ActionListener {
         public void actionPerformed (ActionEvent e) {
-            //
+            zoomWin();
         }
     }
 
-    class gridAction implements ActionListener {
+    class okAction implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            gridWin();
+            zoomScale = (Integer)zoomComboBox.getSelectedItem(); //Getting value from comboBox
+            double newCanvasSize = (zoomScale/100) * canvSize;
+            canvas.setSize((int)newCanvasSize, (int)newCanvasSize);
         }
     }
 
-    class enterAction extends Component implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            try {
-                getXTextValue = xTextField.getText();
-                getYTextValue = yTextField.getText();
-                xAxis = Integer.parseInt(getXTextValue); //Convert string to int
-                yAxis = Integer.parseInt(getYTextValue); //Convert string to int
-            } catch (NumberFormatException exception) {
-                JOptionPane.showMessageDialog(this, "Please input a positive integer", "Input: Error", JOptionPane.ERROR_MESSAGE);
-            }
-            if (xAxis < 0 || yAxis < 0) {
-                JOptionPane.showMessageDialog(this, "Please input a positive integer", "Input: Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }
+//    class enterAction extends Component implements ActionListener {
+//        public void actionPerformed(ActionEvent e) {
+//            try {
+//                getXTextValue = xTextField.getText();
+//                getYTextValue = yTextField.getText();
+//                xAxis = Double.parseDouble(getXTextValue); //Convert string to double
+//                yAxis = Double.parseDouble(getYTextValue); //Convert string to double
+//            } catch (NumberFormatException exception) {
+//                JOptionPane.showMessageDialog(this, "Please input a positive coordinate", "Input: Error", JOptionPane.ERROR_MESSAGE);
+//            }
+//            if (xAxis <= 0 || yAxis <= 0) {
+//                JOptionPane.showMessageDialog(this, "Please input a positive coordinate", "Input: Error", JOptionPane.ERROR_MESSAGE);
+//            }
+//        }
+//    }
 
     //Based on the selected button send the click coordinates to be processed
     //The shape instruction will be saved to the temp file once the shape is complete
@@ -509,10 +503,8 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             if (selectBtn == Type.PLOT) {
                 Shapes.saveShape(e.getX(),e.getY(),"PLOT");
             } else if (selectBtn == Type.LINE) {
-                //Shapes.line(e.getX(), e.getY());
                 Shapes.saveShape(e.getX(),e.getY(),"LINE");
             } else if (selectBtn == Type.RECTANGLE) {
-                //Shapes.rect(e.getX(), e.getY());
                 Shapes.saveShape(e.getX(),e.getY(),"RECTANGLE");
             } else if (selectBtn == Type.ELLIPSE) {
                 Shapes.saveShape(e.getX(),e.getY(),"ELLIPSE");
