@@ -18,7 +18,7 @@ import java.util.Arrays;
  * Application - GUI creation and declaration, in addition to action listener classes
  *
  * @authors Group_010 - Daniel Baharvand, James Dick, Jai Hunt, Jovi Lee
- * @version 4.1.1
+ * @version 4.2
  */
 public class Gui extends JFrame implements ActionListener, Runnable {
     @Override
@@ -75,7 +75,6 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//exit gracefully
         setJMenuBar(createMenu());//create the menuBar
         getContentPane().add(display());//add all contents (inside display) to frame
-
         addComponentListener(new ResizeListener());//add the resize listener to keep inner windows at correct location
         setVisible(true);//make things visible
     }
@@ -341,6 +340,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
                     //load from file at selected location to the temp file with ASCII format
                     Shapes.fillColor=null;//discord previos fill color
                     tempVEC= Files.readString(Paths.get(selectedFile.getAbsolutePath()), StandardCharsets.US_ASCII);
+                    if(!tempVEC.endsWith("\n")) tempVEC=tempVEC+"\n";
                 } catch (IOException ex) {// catch IO exceptions
                     JOptionPane.showMessageDialog(getContentPane(), "Please select a valid VEC file",
                             "Input Error", JOptionPane.ERROR_MESSAGE);

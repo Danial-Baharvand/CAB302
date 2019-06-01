@@ -50,55 +50,71 @@ class MyPanel extends JPanel {
             if(!Shapes.readyToDraw){
                 Shapes.pressedX = -3;
             }
-            switch (drawingTool) {
-                case "PLOT":
-                    if (scanner.hasNextFloat()) {
-                        Shapes.plot(intCanvas(scanner.next()), intCanvas(scanner.next()),g);
-                    }
-                    break;
-                case "LINE":
-                    for (int i = 0; i < 2; i++) {
+            try {
+                switch (drawingTool) {
+                    case "PLOT":
+                        if (scanner.hasNextFloat()) {
+                            Shapes.plot(intCanvas(scanner.next()), intCanvas(scanner.next()),g);
+                        }
+                        break;
+                    case "LINE":
+                        for (int i = 0; i < 2; i++) {
+                            if (scanner.hasNext()) {
+                                Shapes.line(intCanvas(scanner.next()), intCanvas(scanner.next()),g);
+                            }
+                        }
+                        break;
+                    case "RECTANGLE":
+                        for (int i = 0; i < 2; i++) {
+                            if (scanner.hasNext()) {
+                                Shapes.rect(intCanvas(scanner.next()), intCanvas(scanner.next()),g);
+                            }
+                        }
+                        break;
+                    case "ELLIPSE":
+                        for (int i = 0; i < 2; i++) {
+                            if (scanner.hasNext()) {
+                                Shapes.ellipse(intCanvas(scanner.next()), intCanvas(scanner.next()),g);
+                            }
+                        }
+                        break;
+                    case "POLYGON":
+                        while (scanner.hasNextFloat()) {
+                            Shapes.polAddLoad(intCanvas(scanner.next()), intCanvas(scanner.next()));
+                        }
+                        if(Shapes.readyToDraw) Shapes.polygon(g);
+                        break;
+                    case "PEN":
                         if (scanner.hasNext()) {
-                            Shapes.line(intCanvas(scanner.next()), intCanvas(scanner.next()),g);
+                            Shapes.penColor=Color.decode(scanner.next());
+                            g.setColor(Shapes.penColor);
                         }
-                    }
-                    break;
-                case "RECTANGLE":
-                    for (int i = 0; i < 2; i++) {
+                        break;
+                    case "FILL":
                         if (scanner.hasNext()) {
-                            Shapes.rect(intCanvas(scanner.next()), intCanvas(scanner.next()),g);
+                            if (scanner.hasNext("OFF")){
+                                scanner.next();
+                                Shapes.fillColor=null;
+                            }else {
+                                Shapes.fillColor = Color.decode(scanner.next());
+                            }
                         }
-                    }
-                    break;
-                case "ELLIPSE":
-                    for (int i = 0; i < 2; i++) {
-                        if (scanner.hasNext()) {
-                            Shapes.ellipse(intCanvas(scanner.next()), intCanvas(scanner.next()),g);
-                        }
-                    }
-                    break;
-                case "POLYGON":
-                    while (scanner.hasNextFloat()) {
-                        Shapes.polAddLoad(intCanvas(scanner.next()), intCanvas(scanner.next()));
-                    }
-                    if(Shapes.readyToDraw) Shapes.polygon(g);
-                    break;
-                case "PEN":
-                    if (scanner.hasNext()) {
-                        Shapes.penColor=Color.decode(scanner.next());
-                        g.setColor(Shapes.penColor);
-                    }
-                    break;
-                case "FILL":
-                    if (scanner.hasNext()) {
-                        if (scanner.hasNext("OFF")){
-                            scanner.next();
-                            Shapes.fillColor=null;
-                        }else {
-                            Shapes.fillColor = Color.decode(scanner.next());
-                        }
-                    }
-                    break;
+                        break;
+                    default:
+                        Gui.tempVEC = "";
+                        g.dispose();
+                        repaint();
+                        //throw an exception if the draw instruction is non of the above
+                        throw new Exception("The loaded file is or has become corrupted");
+
+                }
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e.getMessage(),
+                        "Input Error", JOptionPane.ERROR_MESSAGE);
+                g.dispose();
+                repaint();
+
 
             }
         }
