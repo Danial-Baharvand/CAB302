@@ -4,23 +4,33 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
 import java.util.Scanner;
-//THIS CLASS READS FROM TEMP AND DRAWS THE SHAPES
-//ADDITIONAL COMMENTS WILL BE ADDED LATER
+
+/**
+ * Reads from temp file and then uses that information to enable the user to draw shapes onto the canvas.
+ *
+ * @authors Group_010
+ * @version 3.9 (Javadocs + Exceptions + Unittesting)
+ */
 class MyPanel extends JPanel {
-    private Scanner scanner;
-    //all the painting has been implemented inside this method
+
+    /**
+     * all the painting has been implemented inside this method
+     *
+     * @param g paintComponent.Graphics
+     */
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+
         //reset pen and fill colors to defaults
         Shapes.fillColor=null;
         Shapes.penColor=Color.black;
-        Gui.model.clear();//clear menu items
-        Gui.model.addAll(Arrays.asList(Gui.tempVEC.split("\n")));//update menu items from the latest temp
-        String drawingTool = null;//stores the shape to be drawn with
-        if(Gui.selectedHistory<0){//if a history item is not selected
-            scanner = new Scanner(Gui.tempVEC);//read from the main temp
-        }else {
-            scanner = new Scanner(Gui.historyTempVEC);//read from the history temp
+        Gui.model.clear(); //clear menu items
+        Gui.model.addAll(Arrays.asList(Gui.tempVEC.split("\n"))); //update menu items from the latest temp
+        Scanner scanner;
+        if(Gui.selectedHistory<0){ //if a history item is not selected
+            scanner = new Scanner(Gui.tempVEC); //read from the main temp
+        } else {
+            scanner = new Scanner(Gui.historyTempVEC); //read from the history temp
         }
         //draw grid if grid is enabled
         if(Gui.gridX>0 &&Gui.gridY>0){
@@ -28,14 +38,15 @@ class MyPanel extends JPanel {
             for (int i=0;i<Gui.canvSize/Gui.gridX;i++){//draw the vertical grid lines
                 g.drawLine(Gui.gridX*i, 0, Gui.gridX*i, Gui.canvSize);
             }
-            for (int i=0;i<Gui.canvSize/Gui.gridY;i++){//draw the horizantal grid lines
+            for (int i=0;i<Gui.canvSize/Gui.gridY;i++){//draw the horizontal grid lines
                 g.drawLine(0, Gui.gridY*i,Gui.canvSize , Gui.gridY*i);
             }
             g.setColor(Shapes.penColor);//revert the color
         }
         //read VEC instruction and draw to screen
         while (scanner.hasNext()) {
-            if (scanner.hasNext())drawingTool = scanner.next();
+            //stores the shape to be drawn with
+            String drawingTool = scanner.next();
             if(!Shapes.readyToDraw){
                 Shapes.pressedX = -3;
             }
@@ -94,7 +105,13 @@ class MyPanel extends JPanel {
             }
         }
     }
-    //calculates correct coordinates for the VEC format based on the canvas size
+
+    /**
+     * calculates correct coordinates for the VEC format based on the canvas size
+     *
+     * @param s coordinates of the VEC file format
+     * @return the coordinates or the VEC format based on the canvas size
+     */
     private static int intCanvas(String s){
         return (int)(Float.valueOf(s)*Gui.canvSize);
     }

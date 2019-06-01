@@ -15,11 +15,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
-
 /**
+ * Application - GUI creation and declaration, in addition to action listener classes
  *
  * @authors Group_010 - Daniel Baharvand, James Dick, Jai Hunt, Jovi Lee
- * @version 3.9
+ * @version 4.0
  */
 public class Gui extends JFrame implements ActionListener, Runnable {
     @Override
@@ -27,7 +27,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
 
     }
 
-    //initialising up our varriables
+    //initialising up our variables
     enum Type {PLOT, LINE, RECTANGLE, ELLIPSE, POLYGON}//stores type of the shape
     private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();//getting user's resolution
     private double WIDTH = screenSize.getWidth(); // screen width
@@ -37,23 +37,21 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     private JInternalFrame shapesWindow;
     private JInternalFrame colorWindow;
     private JInternalFrame historyWindow;
-    private JInternalFrame utilWindow;
     //initialising history window buttons
     private JButton cancelHistory;
     private JButton confirmHistory;
     private JColorChooser colors;//initialising the colorChooser
     private Type selectBtn;//stores which shape is currently selected
+    private static JTextField gridXField;//holds the horizontal size of the grid
+    private static JTextField gridYField;//holds the vertical size of the grid
+    private static JTextField bmpResField;//holds the user specified resolution for the bitmap export
+    private static JPanel canvas;// initialising the canvas
     static String tempVEC="";//this string is usd as cache, the VEC instructions are saved here
     static String historyTempVEC="";
-    static JPanel canvas;// initialising the canvas
     static int canvSize = 800;// canvas size can be changed form here
-    static DefaultListModel model;//keeps the list items
-    static JTextField gridXField;//holds the horizontal size of the grid
-    static JTextField gridYField;//holds the vertical size of the grid
-    static JTextField bmpResField;//holds the user spesified resolution for the bitmap export
+    static DefaultListModel<String> model;//keeps the list items
     static int gridX=-1;//value of gridXField converted to integer, set to -1 to disable grid
     static int gridY=-1;//value of gridYField converted to integer, set to -1 to disable grid
-
 
     JList<String> list;
     static int selectedHistory=-2;
@@ -67,19 +65,27 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     private Gui(String title) throws HeadlessException{
         super(title);
     }
-    // creates GUI
+
+    /**
+     * Creates the actual GUI and its parameters
+     */
     private void createGUI(){
         double widthProp = 0.8;//windows width compared to screen size
         double heightProp = 0.8;//windows height compared to screen size
         setSize((int)(WIDTH * widthProp), (int)(HEIGHT * heightProp));//set window size
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//exit gracefully
-        setJMenuBar(createMenu());//create the menubar
+        setJMenuBar(createMenu());//create the menuBar
         getContentPane().add(display());//add all contents (inside display) to frame
 
         addComponentListener(new ResizeListener());//add the resize listener to keep inner windows at correct location
         setVisible(true);//make things visible
     }
-    //create the display
+
+    /**
+     * Creates the background display of the window, separating the rest of the window from the drawing canvas.
+     *
+     * @return the background display
+     */
     private JDesktopPane display(){
         JDesktopPane bg = new JDesktopPane();// get a new JDesktopPane
         bg.setBackground(Color.lightGray);//set background color
@@ -88,11 +94,14 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         bg.add(makeCanvas());
         bg.add(createShapes());
         bg.add(createHistoryWindow());
-        bg.add(createUtilWin());
         return bg;
     }
 
-    //create the canvas
+    /**
+     * Creates the canvas on the window, the space in which shapes can be drawn on
+     *
+     * @return the canvas to be added to the display window.
+     */
     private JPanel makeCanvas(){
         canvas = new MyPanel(); // get a new instance of MyPanel
         canvas.setSize(canvSize, canvSize); //set the canvas size (always a square)
@@ -102,7 +111,13 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         canvas.addMouseListener(new canvasAction());// add a listener for mouse clicks on canvas
         return canvas;
     }
-    //creates the menu
+
+    /**
+     * Creates the toolbar menu found on all standard applications. File, Save and Load features can be found tabbed
+     * at the top of the page.
+     *
+     * @return the toolbar to be added to the display window.
+     */
     private JMenuBar createMenu(){
         JMenuBar bar = new JMenuBar();//get a Menu Bar
         //Menu options
@@ -149,7 +164,13 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         undo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z,InputEvent.CTRL_DOWN_MASK));
         return bar;
     }
-    //creates the shapes window
+
+    /**
+     * Creates the frame displaying all the possible shapes/vectors the user can choose to input into the display canvas.
+     * Allowing for the selection of Plot, Line, Rectangle, Ellipses and Polygons to be drawn to the canvas.
+     *
+     * @return the shapes frame to be added to the side of the display window.
+     */
     private JInternalFrame createShapes(){
         shapesWindow = new JInternalFrame("Shapes");//get a new internal frame
         JPanel shapesPanel = new JPanel(new GridLayout(6, 1));//new shapes panel with grid layout
@@ -181,7 +202,12 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         shapesWindow.setVisible(true);
         return shapesWindow;
     }
-    //creates the color window
+
+    /**
+     * Creates the frame displaying all the possible colors the user can choose for the pen/fill
+     *
+     * @return the color frame to be added at the bottom of the display window.
+     */
     private JInternalFrame createColorWindow(){
         colorWindow = new JInternalFrame("Color");// get a new internal frame
         colorWindow.setLayout(new FlowLayout());//set to flow layout
@@ -204,9 +230,14 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         colorWindow.add(noFillColorButton);
         return colorWindow;
     }
-    //Creates the history windows to provide the ability to go back and forth in instructions
+
+    /**
+     * Creates a history frame that stores the users actions in a graphical display.
+     *
+     * @return history frame to be added at the top of the display window.
+     */
     private JInternalFrame createHistoryWindow() {
-        model = new DefaultListModel();//holds histroy window items
+        model = new DefaultListModel<>();//holds history window items
         model.addAll(Arrays.asList(tempVEC.split("\n")));//adds each line of tempVEC as an item in the list
         list = new JList<>( model );//make a new JList with the model as its contents
         list.addListSelectionListener(new myListSelectionListener());//add the listener for clicks on list items
@@ -235,28 +266,10 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         confirmHistory.setEnabled(false);
         return historyWindow;
     }
-    //creates the utilities window
-    private JInternalFrame createUtilWin(){
-        //Separate utilities window for zoom and grid features
-        utilWindow = new JInternalFrame("Utilities");
-        //Panel
-        JPanel utilPanel = new JPanel(new GridLayout(1, 2));
-        //Buttons
-        JButton zoomBtn = new JButton(new ImageIcon("magnifyingGlass.png"));
-        JButton gridBtn = new JButton(new ImageIcon("grid.png"));
-        //Setting utils parameters in window
-        utilWindow.setSize(100, 80);
-        utilWindow.setLocation(0, 600);
-        //Adding util to window
-        utilPanel.add(zoomBtn);
-        utilPanel.add(gridBtn);
-        zoomBtn.addActionListener(new zoomAction());
-        gridBtn.addActionListener(new gridAction());
-        utilWindow.add(utilPanel);
-        utilWindow.setVisible(true);
-        return utilWindow;
-    }
-    //resets the values of stored points for shapes
+
+    /**
+     * resets the values of stored points for shapes
+     */
     private void resetShapesCoordinates(){
         Shapes.pressedX = -1;
         Shapes.pressedY = -1;
@@ -264,13 +277,21 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         Shapes.polY.clear();
         Shapes.polCount=0;
     }
-    //menu exit
+
+    /* Action Listener Implementation Classes */
+
+    /**
+     * menu exit
+     */
     class exitAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
             System.exit(0);
         }//exit successfully
     }
-    //menu save
+
+    /**
+     * menu save
+     */
     class saveAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
             String saveFilePath;//stores save path
@@ -296,13 +317,19 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             }
         }
     }
-    //display the bmp window
+
+    /**
+     * display the bmp window
+     */
     class bmpAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
             bmpWin();
         }
     }
-    //menu load
+
+    /**
+     * menu load
+     */
     class loadAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
             //get a new file chooser at home directory
@@ -323,6 +350,10 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             }
         }
     }
+
+    /**
+     * Undo functionality for user actions
+     */
     class undoAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
           //implement undo
@@ -333,7 +364,10 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             repaint();//show the updated canvas
         }
     }
-    //toggle visibility of inner windows
+
+    /**
+     * toggle visibility and location of shapes window
+     */
     class shapesToggleAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
             if(shapesWindow.isVisible())shapesWindow.setVisible(false);
@@ -344,7 +378,9 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         }
     }
 
-
+    /**
+     * toggle visibility, location and size of color window
+     */
     class colorToggleAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
             if(colorWindow.isVisible())colorWindow.setVisible(false);
@@ -357,6 +393,9 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         }
     }
 
+    /**
+     * toggle visibility, location and size of history window
+     */
     class historyToggleAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
             if(historyWindow.isVisible()){
@@ -365,8 +404,11 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             } else historyWindow.setVisible(true);
         }
     }
-    //set drawing pen shape, also disable polEndButton as that is only relevant to polygon
-    //finally reset click history in case another shape was in the middle of being drawn
+
+    /**
+     * set drawing plot shape, also disable polEndButton as that is only relevant to polygon. Finally reset click
+     * history in case another shape was in the middle of being drawn
+     */
     class plotAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
             polEndButton.setEnabled(false);
@@ -375,6 +417,11 @@ public class Gui extends JFrame implements ActionListener, Runnable {
 
         }
     }
+
+    /**
+     * set drawing line, also disable polEndButton as that is only relevant to polygon. Finally reset click history
+     * in case another shape was in the middle of being drawn
+     */
     class lineAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
             polEndButton.setEnabled(false);
@@ -382,6 +429,11 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             resetShapesCoordinates();
         }
     }
+
+    /**
+     * set drawing rectangle, also disable polEndButton as that is only relevant to polygon. Finally reset click
+     * history in case another shape was in the middle of being drawn
+     */
     class rectAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
             polEndButton.setEnabled(false);
@@ -389,6 +441,11 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             resetShapesCoordinates();
         }
     }
+
+    /**
+     * set drawing ellipse, also disable polEndButton as that is only relevant to polygon. Finally reset click
+     * history in case another shape was in the middle of being drawn
+     */
     class ellipseAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
             polEndButton.setEnabled(false);
@@ -396,15 +453,21 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             resetShapesCoordinates();
         }
     }
-    //set drawing pen shape to polygon, also enable polEndButton to provide the ability to end the polygon
-    //finally reset click history in case another shape was in the middle of being drawn
+
+    /**
+     * set drawing pen shape to polygon, also enable polEndButton to provide the ability to end the polygon finally
+     * reset click history in case another shape was in the middle of being drawn
+     */
     class polygonAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
             selectBtn =Type.POLYGON;
             resetShapesCoordinates();
         }
     }
-    //finish the polygon and save it to temp, update the canvas
+
+    /**
+     * finish the polygon and save it to temp, update the canvas
+     */
     class polEndAction implements ActionListener{
         public void actionPerformed(ActionEvent e) {
             Shapes.polygon();
@@ -412,21 +475,30 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             if(Shapes.readyToDraw)canvas.repaint();
         }
     }
-    //store the selected color in the JColorChooser in the temp file
+
+    /**
+     * store the selected color in the JColorChooser in the temp file
+     */
     class penColorAction implements ActionListener{
         public void actionPerformed(ActionEvent e) {
             tempVEC = tempVEC + "PEN " + "#" + Integer.toHexString(colors.getColor().getRGB()).substring(2)+"\n";
             repaint();
         }
     }
-    //store the selected fill color in the JColorChooser in the temp file
+
+    /**
+     * store the selected fill color in the JColorChooser in the temp file
+     */
     class fillColorAction implements ActionListener{
         public void actionPerformed(ActionEvent e) {
             tempVEC = tempVEC + "FILL " + "#" + Integer.toHexString(colors.getColor().getRGB()).substring(2)+"\n";
             repaint();
         }
     }
-    //insert FILL OFF command in temp to avoid filling the next shape
+
+    /**
+     * insert FILL OFF command in temp to avoid filling the next shape
+     */
     class noFillColorAction implements ActionListener{
         public void actionPerformed(ActionEvent e) {
             tempVEC = tempVEC + "FILL OFF\n";
@@ -434,7 +506,10 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         }
 
     }
-    //confirm the selected stage of drawing
+
+    /**
+     * confirm the selected stage of drawing
+     */
     class confirmHistoryAction implements ActionListener{
         public void actionPerformed(ActionEvent e) {
             tempVEC = historyTempVEC+"\n";//set the main temp to the history temp
@@ -445,7 +520,10 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             repaint();//repaint to show updated list
         }
     }
-    //cancel the selected drawing stage and go back to the latest drawing
+
+    /**
+     * cancel the selected drawing stage and go back to the latest drawing
+     */
     class cancelHistoryAction implements ActionListener{
         public void actionPerformed(ActionEvent e) {
            selectedHistory=-1;//reset the menu selected item
@@ -456,12 +534,9 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         }
     }
 
-    class zoomAction implements ActionListener {
-        public void actionPerformed (ActionEvent e) {
-            //
-        }
-    }
-    //Opens the grid window
+    /**
+     * Opens the grid window
+     */
     class gridAction implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             if(gridX<0&&gridY<0) {//show the grid window if the grid is not enabled
@@ -473,7 +548,10 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             }
         }
     }
-    //Produces the grid when the desired grid size is entered and the Confirm button is pressed
+
+    /**
+     * Produces the grid when the desired grid size is entered and the Confirm button is pressed
+     */
     class gridEnterAction implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             try {
@@ -491,7 +569,10 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             repaint();// show the grid
         }
     }
-    // saves a bitmap of the drawn image to the chosen loaction
+
+    /**
+     * saves a bitmap of the drawn image to the chosen location
+     */
     class bmpEnterAction implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             int bmpRes = -1;//stores bitmap size
@@ -535,7 +616,10 @@ public class Gui extends JFrame implements ActionListener, Runnable {
 
         }
     }
-    //make the grid window
+
+    /**
+     * makes the popup grid window
+     */
     private void gridWin(){
         //Popup window
         JFrame parent = new JFrame("Grid Input");
@@ -570,7 +654,10 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         parent.setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
-    //make the bmp window
+
+    /**
+     * makes the popup bmp window
+     */
     private void bmpWin(){
         //Popup window
         JFrame parent = new JFrame("Grid Input");
@@ -598,9 +685,10 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-
-    //based on the selected button send the click coordinates to be proccessed
-    //the shape instruction will be saved to the temp file once the shape is complete
+    /**
+     * based on the selected button send the click coordinates to be proccessed. the shape instruction will be saved
+     * to the temp file once the shape is complete
+     */
     class canvasAction extends MouseAdapter {
         @Override
         public void mouseClicked(MouseEvent e) {
@@ -643,22 +731,26 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         }
     }
 
-    //keep window elements at correct position (also resets position) when window is resided
+    /**
+     * keep window elements at correct position (also resets position) when window is resided
+     */
     class ResizeListener extends ComponentAdapter {
         public void componentResized(ComponentEvent e) {
             historyWindow.setLocation(getContentPane().getBounds().getSize().width - 300,50);
             colorWindow.setLocation(getContentPane().getBounds().getSize().width - 600,getContentPane().getBounds().getSize().height - 300);
-            utilWindow.setLocation(0, getContentPane().getBounds().getSize().height - 80);
         }
     }
-    //updates a secondary temp when a menu item is selected and shows the drawing at that stage
+
+    /**
+     * updates a secondary temp when a menu item is selected and shows the drawing at that stage
+     */
     class myListSelectionListener implements ListSelectionListener {
         @Override
         public void valueChanged(ListSelectionEvent e) {
             if (!e.getValueIsAdjusting() && !list.isSelectionEmpty()) {//check if a menu item is properly selected
                 selectedHistory=list.getSelectedIndex();//save selected history menu item
                 System.out.println(selectedHistory);
-                //deleting the undoed instructions
+                //deleting the undo instructions
                 int endIndex = -1;//starts from -1 and is increased for the number of desired characters
                 for (int i = 0; i <= selectedHistory; i++) {
                     endIndex = tempVEC.indexOf('\n', endIndex+1);//get the index of the last character

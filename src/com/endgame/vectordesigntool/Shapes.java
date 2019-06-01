@@ -2,17 +2,22 @@ package com.endgame.vectordesigntool;
 
 import java.awt.*;
 import java.util.ArrayList;
-//THIS CLASS SAVES THE MOUSE CLICKS TO THE TEMP FILE
-//ADDITIONAL COMMENTS WILL BE ADDED LATER
+
+/**
+ * Reads and then stores the coordinates of the users mouse clicks to a temp file.
+ *
+ * @authors Group_010
+ * @version 3.9 (Javadocs + Exceptions + Unittesting)
+ */
 class Shapes {
     static int polCount = 0;//number of polygon points for saving to temp
     private static int loadPolCount = 0;//number of polygon points for painting
-    //initialise two arraylists to store location of polygon points' coordinates to be saved to temp
-    static ArrayList<Integer> polX = new ArrayList<Integer>();
-    static ArrayList<Integer> polY = new ArrayList<Integer>();
-    //initialise two arraylists to store location of polygon points' coordinates to be painted
-    private static ArrayList<Integer> loadPolX = new ArrayList<Integer>();
-    private static ArrayList<Integer> loadPolY = new ArrayList<Integer>();
+    //initialise two arrayLists to store location of polygon points' coordinates to be saved to temp
+    static ArrayList<Integer> polX = new ArrayList<>();
+    static ArrayList<Integer> polY = new ArrayList<>();
+    //initialise two arrayLists to store location of polygon points' coordinates to be painted
+    private static ArrayList<Integer> loadPolX = new ArrayList<>();
+    private static ArrayList<Integer> loadPolY = new ArrayList<>();
     // set default color and fill
     static Color penColor = Color.black;
     static Color fillColor=null;
@@ -20,12 +25,26 @@ class Shapes {
     static int pressedX = -1;//stores the first x coordinate for the two point shapes, set to -1 before it's recorded
     static int pressedY = -1;//stores the first y coordinate for the two point shapes, set to -1 before it's recorded
     private static ArrayList<String> History = new ArrayList<String>();// instructions are constructed in History
-    //draw a dot on canvas
+
+    /**
+     * draws a dot on canvas
+     *
+     * @param x coordinate
+     * @param y coordinate
+     * @param g paintComponent.Graphics
+     */
     static void plot(int x,int y,Graphics g) {
         g.drawLine(x, y, x, y);
 
     }
-    //draw a line on canvas
+
+    /**
+     * draws a line on canvas
+     *
+     * @param x coordinate
+     * @param y coordinate
+     * @param g paintComponent.Graphics
+     */
     static void line(int x,int y,Graphics g) {
         if (pressedX < 0){//if first point
             //store the first point coordinates
@@ -36,7 +55,14 @@ class Shapes {
             pressedX = -1;//reset
         }
     }
-    //draw a rectangle on the canvas
+
+    /**
+     * draws a rectangle on canvas
+     *
+     * @param x coordinate
+     * @param y coordinate
+     * @param g paintComponent.Graphics
+     */
     static void rect(int x,int y, Graphics g) {
         if (pressedX < 0){//if first point
             //store the first point
@@ -55,7 +81,14 @@ class Shapes {
             pressedX = -1;//reset
         }
     }
-    //draw a ellipse on the canvas
+
+    /**
+     * draws an ellipse on canvas
+     *
+     * @param x coordinate
+     * @param y coordinate
+     * @param g paintComponent.Graphics
+     */
     static void ellipse(int x, int y, Graphics g) {
         if (pressedX < 0){//if first point
             //store the first point
@@ -74,7 +107,12 @@ class Shapes {
             pressedX = -1;//reset
         }
     }
-    //draws a polygon
+
+    /**
+     * draws a polygon on the canvas
+     *
+     * @param g paintComponent.Graphics
+     */
     static void polygon(Graphics g) {
         if (loadPolCount>2){// if there are at least 2 points in the polygon
             readyToDraw=true;//enable drawing
@@ -92,7 +130,11 @@ class Shapes {
             loadPolCount = 0;
         }
     }
-    //store polygon instructions to temp
+
+    /**
+     * store polygon instructions to temp
+     *
+     */
     static void polygon() {
         if (polCount>2){// if there are at least 2 points in the polygon
             History.add("POLYGON");
@@ -111,7 +153,13 @@ class Shapes {
             polCount = 0;
         }
     }
-    //add a point to the polygon for drawing
+
+    /**
+     * add a point to the polygon for drawing
+     *
+     * @param x takes input y coordinate of the mouse click
+     * @param y takes input y coordinate of the mouse click
+     */
     static void polAdd(int x, int y){
         System.out.print(x+" "+ y+"\n");
         readyToDraw=false;
@@ -119,7 +167,13 @@ class Shapes {
         polY.add(y);
         polCount++;
     }
-    //add a point to polygon for adding to temp
+
+    /**
+     * add a point to polygon for adding to temp
+     *
+     * @param x takes input y coordinate of the mouse click
+     * @param y takes input y coordinate of the mouse click
+     */
     static void polAddLoad(int x, int y){
         System.out.print(x+" "+ y+"\n");
         loadPolX.add(x);
@@ -127,14 +181,24 @@ class Shapes {
         loadPolCount++;
         readyToDraw=true;
     }
-    //(helper class) adds contents of the secondary temp to the main temp and properly formats it
+
+    /**
+     * (helper class) adds contents of the secondary temp to the main temp and properly formats it
+     */
     private static void addHisTOTemp(){
         Gui.tempVEC= Gui.tempVEC +History.toString().replace(",", "")  //remove the commas
                 .replace("[", "")  //remove the right bracket
                 .replace("]", "")  //remove the left bracket
                 .replaceFirst(".$","");
     }
-    //(helper class) adds the shape vec instructions to History (secondary temp)
+
+    /**
+     * (helper class) adds the shape vec instructions to History (secondary temp)
+     *
+     * @param x coordinate
+     * @param y coordinate
+     * @param shapeName
+     */
     private static void addToHisAndTemp(int x, int y, String shapeName){
         History.add(shapeName);
         if (!shapeName.equals("PLOT")) {
@@ -147,7 +211,14 @@ class Shapes {
         addHisTOTemp();
         History.clear();
     }
-    //encodes the shapes coordinates in vec format and adds it to temp
+
+    /**
+     * encodes the shapes coordinates in vec format and adds it to temp
+     *
+     * @param x coordinate
+     * @param y coordinate
+     * @param shapeName the name of the shape
+     */
     static void saveShape(int x,int y, String shapeName) {
         if(shapeName.equals("PLOT")) {
             addToHisAndTemp (x, y, shapeName);readyToDraw=true;
