@@ -25,7 +25,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
 
     }
 
-    //initialising up our varriables
+    //initialising up our variables
     enum Type {PLOT, LINE, RECTANGLE, ELLIPSE, POLYGON}//stores type of the shape
     private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();//getting user's resolution
     private double WIDTH = screenSize.getWidth(); // screen width
@@ -40,14 +40,15 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     private JButton confirmHistory;
     private JColorChooser colors;//initialising the colorChooser
     private Type selectBtn;//stores which shape is currently selected
+    private static JTextField gridXField;//holds the horizontal size of the grid
+    private static JTextField gridYField;//holds the vertical size of the grid
+    private static JTextField bmpResField;//holds the user specified resolution for the bitmap export
+    private static JPanel canvas;// initialising the canvas
     static String tempVEC="";//this string is usd as cache, the VEC instructions are saved here
     static String historyTempVEC="";
-    static JPanel canvas;// initialising the canvas
     static int canvSize = 1000;// canvas size can be changed form here
-    static DefaultListModel model;//keeps the list items
-    static JTextField gridXField;//holds the horizontal size of the grid
-    static JTextField gridYField;//holds the vertical size of the grid
-    static JTextField bmpResField;//holds the user spesified resolution for the bitmap export
+    static DefaultListModel<String> model;//keeps the list items
+
     static int gridX=-1;//value of gridXField converted to integer, set to -1 to disable grid
     static int gridY=-1;//value of gridYField converted to integer, set to -1 to disable grid
 
@@ -72,7 +73,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         double heightProp = 0.8;//windows height compared to screen size
         setSize((int)(WIDTH * widthProp), (int)(HEIGHT * heightProp));//set window size
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//exit gracefully
-        setJMenuBar(createMenu());//create the menubar
+        setJMenuBar(createMenu());//create the menuBar
         getContentPane().add(display());//add all contents (inside display) to frame
 
         addComponentListener(new ResizeListener());//add the resize listener to keep inner windows at correct location
@@ -235,7 +236,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
      * @return history frame to be added at the top of the display window.
      */
     private JInternalFrame createHistoryWindow() {
-        model = new DefaultListModel();//holds histroy window items
+        model = new DefaultListModel<>();//holds history window items
         model.addAll(Arrays.asList(tempVEC.split("\n")));//adds each line of tempVEC as an item in the list
         list = new JList<>( model );//make a new JList with the model as its contents
         list.addListSelectionListener(new myListSelectionListener());//add the listener for clicks on list items
@@ -559,7 +560,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             }
             if (gridX <= 0 || gridY <= 0 || gridX>canvSize/2 ||gridY>canvSize/2) {//check valid range
                 JOptionPane.showMessageDialog(getContentPane(), "Please input an integer between 1 and "
-                        +String.valueOf(canvSize), "Input: Error", JOptionPane.ERROR_MESSAGE);
+                        + canvSize, "Input: Error", JOptionPane.ERROR_MESSAGE);
             }
             repaint();// show the grid
         }
