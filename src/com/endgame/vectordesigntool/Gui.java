@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.charset.MalformedInputException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -45,7 +46,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     static String tempVEC="";//this string is usd as cache, the VEC instructions are saved here
     static String historyTempVEC="";
     static JPanel canvas;// initialising the canvas
-    static int canvSize = 1000;// canvas size can be changed form here
+    static int canvSize = 800;// canvas size can be changed form here
     static DefaultListModel model;//keeps the list items
     static JTextField gridXField;//holds the horizontal size of the grid
     static JTextField gridYField;//holds the vertical size of the grid
@@ -95,7 +96,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     private JPanel makeCanvas(){
         canvas = new MyPanel(); // get a new instance of MyPanel
         canvas.setSize(canvSize, canvSize); //set the canvas size (always a square)
-        canvas.setLocation(150, 50);//set loction
+        canvas.setLocation(80, 30);//set loction
         canvas.setOpaque(true); //make the canvas opaque
         canvas.setBackground(Color.WHITE); //set canvas color
         canvas.addMouseListener(new canvasAction());// add a listener for mouse clicks on canvas
@@ -289,7 +290,8 @@ public class Gui extends JFrame implements ActionListener, Runnable {
                         new FileOutputStream(saveFilePath), StandardCharsets.US_ASCII))) {
                     writer.write(tempVEC);
                 } catch (IOException ex) {// catch IO exceptions
-                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(getContentPane(), "Please select a valid save location",
+                            "Input Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
@@ -314,7 +316,8 @@ public class Gui extends JFrame implements ActionListener, Runnable {
                     Shapes.fillColor=null;//discord previos fill color
                     tempVEC= Files.readString(Paths.get(selectedFile.getAbsolutePath()), StandardCharsets.US_ASCII);
                 } catch (IOException ex) {// catch IO exceptions
-                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(getContentPane(), "Please select a valid VEC file",
+                            "Input Error", JOptionPane.ERROR_MESSAGE);
                 }
                 canvas.repaint();
             }
@@ -476,13 +479,14 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             try {
                 gridX = Integer.parseInt(gridXField.getText()); //get text input and convert string to int
                 gridY = Integer.parseInt(gridYField.getText()); //get text input and convert string to int
-            } catch (NumberFormatException exception) {//catch if not an integer
-                JOptionPane.showMessageDialog(getContentPane(), "Please input a positive integer",
-                        "Input: Error", JOptionPane.ERROR_MESSAGE);
-            }
-            if (gridX <= 0 || gridY <= 0 || gridX>canvSize/2 ||gridY>canvSize/2) {//check valid range
-                JOptionPane.showMessageDialog(getContentPane(), "Please input an integer between 1 and "
-                        +String.valueOf(canvSize), "Input: Error", JOptionPane.ERROR_MESSAGE);
+                if (gridX <= 0 || gridY <= 0 || gridX>canvSize/2 ||gridY>canvSize/2) {
+                    gridX=-1;
+                    gridY=-1;
+                    throw new UserInputException("Please input an integer between 1 and "+String.valueOf(canvSize));
+                }
+            } catch (NumberFormatException | UserInputException exception) {//catch if not an integer
+                JOptionPane.showMessageDialog(getContentPane(), exception.getMessage(),
+                        "Input Error", JOptionPane.ERROR_MESSAGE);
             }
             repaint();// show the grid
         }
@@ -492,15 +496,8 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         public void actionPerformed(ActionEvent e) {
             int bmpRes = -1;//stores bitmap size
             try {
+                if (Integer.parseInt(bmpResField.getText()) < 1) throw new UserInputException();//check valid range
                 bmpRes = Integer.parseInt(bmpResField.getText()); //get text input and convert string to int
-            } catch (NumberFormatException exception) {//catch if not an integer
-                JOptionPane.showMessageDialog(getContentPane(), "Please input a positive integer",
-                        "Input: Error", JOptionPane.ERROR_MESSAGE);
-            }
-            if (bmpRes < 1) {//check valid range
-                JOptionPane.showMessageDialog(getContentPane(), "Please enter a valid value "
-                        , "Input: Error", JOptionPane.ERROR_MESSAGE);
-            } else {
                 String saveFilePath;//stores save path
                 //get a new file chooser at home directory
                 JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
@@ -526,11 +523,16 @@ public class Gui extends JFrame implements ActionListener, Runnable {
                     try {
                         ImageIO.write(image, "bmp", new File(saveFilePath));//save the image
                     } catch (IOException ex) {
-                        JOptionPane.showMessageDialog(getContentPane(), "Please ensure IO is availible to be written to",
+                        JOptionPane.showMessageDialog(getContentPane(), "Please ensure IO is available to be written to",
                                 "IO: Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
+            } catch (NumberFormatException | UserInputException exception) {//catch if not an integer
+                JOptionPane.showMessageDialog(getContentPane(), "Please input a positive integer greater than 0",
+                        "Input: Error", JOptionPane.ERROR_MESSAGE);
             }
+
+
         }
     }
     //make the grid window
@@ -670,7 +672,23 @@ public class Gui extends JFrame implements ActionListener, Runnable {
 
         }
     }
+    class UserInputException extends Exception {
+        public UserInputException() {
+            super();
+        }
 
+        public UserInputException(String message) {
+            super(message);
+        }
+
+        public UserInputException(String message, Throwable cause) {
+            super(message, cause);
+        }
+
+        public UserInputException(Throwable cause) {
+            super(cause);
+        }
+    }
 
     @Override
     public void run() {
