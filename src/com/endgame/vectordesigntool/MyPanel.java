@@ -16,7 +16,7 @@ class MyPanel extends JPanel {
     /**
      * all the painting has been implemented inside this method
      *
-     * @param g
+     * @param g paintComponent.Graphics
      */
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -109,7 +109,7 @@ class MyPanel extends JPanel {
     /**
      * calculates correct coordinates for the VEC format based on the canvas size
      *
-     * @param s
+     * @param s coordinates of the VEC file format
      * @return the coordinates or the VEC format based on the canvas size
      */
     private static int intCanvas(String s){
