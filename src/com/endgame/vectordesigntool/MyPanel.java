@@ -54,7 +54,6 @@ class MyPanel extends JPanel {
                 case "PLOT":
                     if (scanner.hasNextFloat()) {
                         Shapes.plot(intCanvas(scanner.next()), intCanvas(scanner.next()),g);
-                        //System.out.print(Gui.tempVEC);
                     }
                     break;
                 case "LINE":
@@ -81,7 +80,6 @@ class MyPanel extends JPanel {
                 case "POLYGON":
                     while (scanner.hasNextFloat()) {
                         Shapes.polAddLoad(intCanvas(scanner.next()), intCanvas(scanner.next()));
-                        System.out.print("tempvec= "+Gui.tempVEC);
                     }
                     if(Shapes.readyToDraw) Shapes.polygon(g);
                     break;

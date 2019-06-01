@@ -161,7 +161,6 @@ class Shapes {
      * @param y takes input y coordinate of the mouse click
      */
     static void polAdd(int x, int y){
-        System.out.print(x+" "+ y+"\n");
         readyToDraw=false;
         polX.add(x);
         polY.add(y);
@@ -175,7 +174,6 @@ class Shapes {
      * @param y takes input y coordinate of the mouse click
      */
     static void polAddLoad(int x, int y){
-        System.out.print(x+" "+ y+"\n");
         loadPolX.add(x);
         loadPolY.add(y);
         loadPolCount++;

@@ -9,7 +9,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.nio.charset.MalformedInputException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -19,7 +18,7 @@ import java.util.Arrays;
  * Application - GUI creation and declaration, in addition to action listener classes
  *
  * @authors Group_010 - Daniel Baharvand, James Dick, Jai Hunt, Jovi Lee
- * @version 4.0
+ * @version 4.1
  */
 public class Gui extends JFrame implements ActionListener, Runnable {
     @Override
@@ -597,17 +596,23 @@ public class Gui extends JFrame implements ActionListener, Runnable {
                     int tempCanvSize = canvSize;//store orignal canvas size
                     canvSize = bmpRes;//change canvas size to the user requested resolution
                     //make a new, empty, buffered image for the image to be drawn to
-                    BufferedImage image = new BufferedImage(bmpRes, bmpRes, BufferedImage.TYPE_INT_RGB);
-                    Graphics g = image.getGraphics();//get the graphics of the buffered image
-                    bmpPanel.paint(g);//paint the drawing to the buffered image's graphic
-                    canvSize = tempCanvSize;//restore original canvas size
                     try {
+                        BufferedImage image = new BufferedImage(bmpRes, bmpRes, BufferedImage.TYPE_INT_RGB);
+                        Graphics g = image.getGraphics();//get the graphics of the buffered image
+                        bmpPanel.paint(g);//paint the drawing to the buffered image's graphic
+                        canvSize = tempCanvSize;//restore original canvas size
+
                         ImageIO.write(image, "bmp", new File(saveFilePath));//save the image
+
+                    } catch (IllegalArgumentException|OutOfMemoryError|NegativeArraySizeException ex1) {
+                        JOptionPane.showMessageDialog(getContentPane(), "Please enter a reasonable resolution",
+                                "IO: Error", JOptionPane.ERROR_MESSAGE);
                     } catch (IOException ex) {
                         JOptionPane.showMessageDialog(getContentPane(), "Please ensure IO is available to be written to",
                                 "IO: Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
+
             } catch (NumberFormatException | UserInputException exception) {//catch if not an integer
                 JOptionPane.showMessageDialog(getContentPane(), "Please input a positive integer greater than 0",
                         "Input: Error", JOptionPane.ERROR_MESSAGE);
@@ -749,7 +754,6 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         public void valueChanged(ListSelectionEvent e) {
             if (!e.getValueIsAdjusting() && !list.isSelectionEmpty()) {//check if a menu item is properly selected
                 selectedHistory=list.getSelectedIndex();//save selected history menu item
-                System.out.println(selectedHistory);
                 //deleting the undo instructions
                 int endIndex = -1;//starts from -1 and is increased for the number of desired characters
                 for (int i = 0; i <= selectedHistory; i++) {
