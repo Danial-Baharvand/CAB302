@@ -18,7 +18,7 @@ import java.util.Arrays;
  * Application - GUI creation and declaration, in addition to action listener classes
  *
  * @authors Group_010 - Daniel Baharvand, James Dick, Jai Hunt, Jovi Lee
- * @version 4.1
+ * @version 4.1.1
  */
 public class Gui extends JFrame implements ActionListener, Runnable {
     @Override
@@ -90,9 +90,9 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         bg.setBackground(Color.lightGray);//set background color
         //add contents
         bg.add(createColorWindow());
-        bg.add(makeCanvas());
-        bg.add(createShapes());
         bg.add(createHistoryWindow());
+        bg.add(createShapes());
+        bg.add(makeCanvas());
         return bg;
     }
 
