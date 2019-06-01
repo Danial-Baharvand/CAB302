@@ -36,7 +36,6 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     private JInternalFrame shapesWindow;
     private JInternalFrame colorWindow;
     private JInternalFrame historyWindow;
-    private JInternalFrame utilWindow;
     //initialising history window buttons
     private JButton cancelHistory;
     private JButton confirmHistory;
@@ -87,7 +86,6 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         bg.add(makeCanvas());
         bg.add(createShapes());
         bg.add(createHistoryWindow());
-        bg.add(createUtilWin());
         return bg;
     }
 
@@ -234,27 +232,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         confirmHistory.setEnabled(false);
         return historyWindow;
     }
-    //creates the utilities window
-    private JInternalFrame createUtilWin(){
-        //Separate utilities window for zoom and grid features
-        utilWindow = new JInternalFrame("Utilities");
-        //Panel
-        JPanel utilPanel = new JPanel(new GridLayout(1, 2));
-        //Buttons
-        JButton zoomBtn = new JButton(new ImageIcon("magnifyingGlass.png"));
-        JButton gridBtn = new JButton(new ImageIcon("grid.png"));
-        //Setting utils parameters in window
-        utilWindow.setSize(100, 80);
-        utilWindow.setLocation(0, 600);
-        //Adding util to window
-        utilPanel.add(zoomBtn);
-        utilPanel.add(gridBtn);
-        zoomBtn.addActionListener(new zoomAction());
-        gridBtn.addActionListener(new gridAction());
-        utilWindow.add(utilPanel);
-        utilWindow.setVisible(true);
-        return utilWindow;
-    }
+
     //resets the values of stored points for shapes
     private void resetShapesCoordinates(){
         Shapes.pressedX = -1;
@@ -453,11 +431,6 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         }
     }
 
-    class zoomAction implements ActionListener {
-        public void actionPerformed (ActionEvent e) {
-            //
-        }
-    }
     //Opens the grid window
     class gridAction implements ActionListener {
         public void actionPerformed(ActionEvent e) {
@@ -646,7 +619,6 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         public void componentResized(ComponentEvent e) {
             historyWindow.setLocation(getContentPane().getBounds().getSize().width - 300,50);
             colorWindow.setLocation(getContentPane().getBounds().getSize().width - 600,getContentPane().getBounds().getSize().height - 300);
-            utilWindow.setLocation(0, getContentPane().getBounds().getSize().height - 80);
         }
     }
     //updates a secondary temp when a menu item is selected and shows the drawing at that stage
@@ -670,8 +642,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
 
         }
     }
-
-
+    
     @Override
     public void run() {
         createGUI();
