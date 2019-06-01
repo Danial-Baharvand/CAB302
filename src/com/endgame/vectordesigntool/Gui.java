@@ -15,6 +15,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 
 /**
+ * Application - GUI creation and declaration, in addition to action listener classes
  *
  * @authors Group_010 - Daniel Baharvand, James Dick, Jai Hunt, Jovi Lee
  * @version 3.9 (Javadocs + Exceptions + Unittesting)
@@ -748,7 +749,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             if (!e.getValueIsAdjusting() && !list.isSelectionEmpty()) {//check if a menu item is properly selected
                 selectedHistory=list.getSelectedIndex();//save selected history menu item
                 System.out.println(selectedHistory);
-                //deleting the undoed instructions
+                //deleting the undo instructions
                 int endIndex = -1;//starts from -1 and is increased for the number of desired characters
                 for (int i = 0; i <= selectedHistory; i++) {
                     endIndex = tempVEC.indexOf('\n', endIndex+1);//get the index of the last character

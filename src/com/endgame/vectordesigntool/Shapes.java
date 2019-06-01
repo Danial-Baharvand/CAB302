@@ -4,6 +4,10 @@ import java.awt.*;
 import java.util.ArrayList;
 //THIS CLASS SAVES THE MOUSE CLICKS TO THE TEMP FILE
 //ADDITIONAL COMMENTS WILL BE ADDED LATER
+
+/**
+ *
+ */
 class Shapes {
     static int polCount = 0;//number of polygon points for saving to temp
     private static int loadPolCount = 0;//number of polygon points for painting
