@@ -35,7 +35,6 @@ class Shapes {
      */
     static void plot(int x,int y,Graphics g) {
         g.drawLine(x, y, x, y);
-
     }
 
     /**

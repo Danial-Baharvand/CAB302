@@ -40,11 +40,11 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     private JButton cancelHistory;
     private JButton confirmHistory;
     private JColorChooser colors;//initialising the colorChooser
-    private Type selectBtn;//stores which shape is currently selected
+    static Type selectBtn;//stores which shape is currently selected
     private static JTextField gridXField;//holds the horizontal size of the grid
     private static JTextField gridYField;//holds the vertical size of the grid
     private static JTextField bmpResField;//holds the user specified resolution for the bitmap export
-    private static JPanel canvas;// initialising the canvas
+    static JPanel canvas;// initialising the canvas
     static String tempVEC="";//this string is usd as cache, the VEC instructions are saved here
     static String historyTempVEC="";
     static int canvSize = 1000;// canvas size can be changed form here
