@@ -18,7 +18,7 @@ import java.util.Arrays;
  * Application - GUI creation and declaration, in addition to action listener classes
  *
  * @author Group_010 - Daniel Baharvand, James Dick, Jai Hunt, Jovi Lee
- * @version 4.4
+ * @version 4.5
  */
 public class Gui extends JFrame implements ActionListener, Runnable {
     @Override
@@ -47,7 +47,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     static JPanel canvas;// initialising the canvas
     static String tempVEC="";//this string is usd as cache, the VEC instructions are saved here
     static String historyTempVEC="";
-    static int canvSize = 800;// canvas size can be changed form here
+    static int canvSize = 1000;// canvas size can be changed form here
     static DefaultListModel<String> model;//keeps the list items
     static int gridX=-1;//value of gridXField converted to integer, set to -1 to disable grid
     static int gridY=-1;//value of gridYField converted to integer, set to -1 to disable grid
@@ -480,34 +480,55 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     }
 
     /**
-     * store the selected color in the JColorChooser in the temp file
+     * Actions for when set pen colour button is pressed
      */
     class penColorAction implements ActionListener{
         public void actionPerformed(ActionEvent e) {
-            tempVEC = tempVEC + "PEN " + "#" + Integer.toHexString(colors.getColor().getRGB()).substring(2)+"\n";
+            doChangePenColour();
             repaint();
         }
     }
 
     /**
-     * store the selected fill color in the JColorChooser in the temp file
+     * Store the selected color in the JColorChooser in the temp file
+     */
+    static void doChangePenColour() {
+        tempVEC = tempVEC + "PEN " + "#" + Integer.toHexString(colors.getColor().getRGB()).substring(2)+"\n";
+    }
+
+    /**
+     * Actions for when set fill colour button is pressed
      */
     class fillColorAction implements ActionListener{
         public void actionPerformed(ActionEvent e) {
-            tempVEC = tempVEC + "FILL " + "#" + Integer.toHexString(colors.getColor().getRGB()).substring(2)+"\n";
+            doChangeFillColour();
             repaint();
         }
     }
 
     /**
-     * insert FILL OFF command in temp to avoid filling the next shape
+     * Store the selected fill color in the JColorChooser in the temp file
+     */
+    static void doChangeFillColour() {
+        tempVEC = tempVEC + "FILL " + "#" + Integer.toHexString(colors.getColor().getRGB()).substring(2)+"\n";
+    }
+
+    /**
+     * Actions for when no fill colour button is pressed
      */
     class noFillColorAction implements ActionListener{
         public void actionPerformed(ActionEvent e) {
-            tempVEC = tempVEC + "FILL OFF\n";
+            doRemoveFillColour();
             repaint();
         }
 
+    }
+
+    /**
+     * Insert FILL OFF command in temp to avoid filling the next shape
+     */
+    static void doRemoveFillColour() {
+        tempVEC = tempVEC + "FILL OFF\n";
     }
 
     /**
@@ -550,7 +571,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             }else {//remove the grid if grid is active
                 gridX=-1;
                 gridY=-1;
-                repaint();//show canvas witout grid
+                repaint();//show canvas without grid
             }
         }
     }
