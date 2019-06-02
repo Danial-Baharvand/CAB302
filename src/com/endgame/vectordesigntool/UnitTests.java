@@ -18,10 +18,11 @@ public class UnitTests extends JPanel {
 
     @Test
     public void testDrawPlot()  {
+        Gui.makeCanvas();
         Gui.selectBtn = Gui.Type.PLOT; //Select to draw plot
 
         mouseClick(1, 1); //Clicks on the canvas and draws plot at 0,0 coordinates
-        assertEquals("0.0", Gui.tempVEC);
+        assertEquals("PLOT 0.001 0.001\n", Gui.tempVEC);
 
         //Check if the coordinates are in the tempVec file
     }
