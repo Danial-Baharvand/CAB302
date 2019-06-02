@@ -18,7 +18,7 @@ import java.util.Arrays;
  * Application - GUI creation and declaration, in addition to action listener classes
  *
  * @author Group_010 - Daniel Baharvand, James Dick, Jai Hunt, Jovi Lee
- * @version 4.2
+ * @version 4.9
  */
 public class Gui extends JFrame implements ActionListener, Runnable {
     @Override
@@ -41,8 +41,8 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     private JButton confirmHistory;
     static JColorChooser colors;//initialising the colorChooser
     static Type selectBtn;//stores which shape is currently selected
-    private static JTextField gridXField;//holds the horizontal size of the grid
-    private static JTextField gridYField;//holds the vertical size of the grid
+    static JTextField gridXField;//holds the horizontal size of the grid
+    static JTextField gridYField;//holds the vertical size of the grid
     private static JTextField bmpResField;//holds the user specified resolution for the bitmap export
     static JPanel canvas;// initialising the canvas
     static String tempVEC="";//this string is usd as cache, the VEC instructions are saved here
@@ -333,6 +333,20 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         parent.setVisible(true);
         parent.setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    static void placeGrid() {
+        try {
+            gridX = Integer.parseInt(gridXField.getText()); //get text input and convert string to int
+            gridY = Integer.parseInt(gridYField.getText()); //get text input and convert string to int
+        } catch (NumberFormatException exception) {//catch if not an integer
+            JOptionPane.showMessageDialog(null, "Please input a positive integer",
+                    "Input: Error", JOptionPane.ERROR_MESSAGE);
+        }
+        if (gridX <= 0 || gridY <= 0 || gridX>canvSize/2 ||gridY>canvSize/2) {//check valid range
+            JOptionPane.showMessageDialog(null, "Please input an integer between 1 and "
+                    + canvSize, "Input: Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /* Action Listener Implementation Classes */
@@ -630,17 +644,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
      */
     class gridEnterAction implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            try {
-                gridX = Integer.parseInt(gridXField.getText()); //get text input and convert string to int
-                gridY = Integer.parseInt(gridYField.getText()); //get text input and convert string to int
-            } catch (NumberFormatException exception) {//catch if not an integer
-                JOptionPane.showMessageDialog(getContentPane(), "Please input a positive integer",
-                        "Input: Error", JOptionPane.ERROR_MESSAGE);
-            }
-            if (gridX <= 0 || gridY <= 0 || gridX>canvSize/2 ||gridY>canvSize/2) {//check valid range
-                JOptionPane.showMessageDialog(getContentPane(), "Please input an integer between 1 and "
-                        + canvSize, "Input: Error", JOptionPane.ERROR_MESSAGE);
-            }
+            placeGrid();
             repaint();// show the grid
         }
     }

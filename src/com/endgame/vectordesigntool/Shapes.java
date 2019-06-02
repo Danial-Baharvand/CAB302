@@ -7,7 +7,7 @@ import java.util.ArrayList;
  * Reads and then stores the coordinates of the users mouse clicks to a temp file.
  *
  * @author Group_010
- * @version 4.2
+ * @version 4.9
  */
 class Shapes {
     static int polCount = 0;//number of polygon points for saving to temp

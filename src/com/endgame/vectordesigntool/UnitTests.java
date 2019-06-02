@@ -2,7 +2,6 @@ package com.endgame.vectordesigntool;
 
 import org.junit.jupiter.api.*;
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,6 +23,8 @@ public class UnitTests extends JPanel {
     public void setUp(){
         Gui.makeCanvas();
         Gui.tempVEC = "";
+        Gui.gridX = 0;
+        Gui.gridY = 0;
     }
 
     @Test
@@ -35,7 +36,7 @@ public class UnitTests extends JPanel {
 
     @Test
     public void testDrawLine()  {
-        Gui.selectBtn = Gui.Type.LINE; //Select to draw line
+        Gui.selectBtn = Gui.Type.LINE; //Select to draw plot
         mouseClick(1, 1); //Clicks on the canvas and draws plot at 0,0 coordinates
         mouseClick(2, 2);
         assertEquals("LINE 0.001 0.001 0.002 0.002\n", Gui.tempVEC); //Check if the coordinates are in the tempVec
@@ -43,7 +44,7 @@ public class UnitTests extends JPanel {
 
     @Test
     public void testDrawRect()  {
-        Gui.selectBtn = Gui.Type.RECTANGLE; //Select to draw rectangle
+        Gui.selectBtn = Gui.Type.RECTANGLE; //Select to draw plot
         mouseClick(1, 1); //Clicks on the canvas and draws plot at 0,0 coordinates
         mouseClick(2, 2);
         assertEquals("RECTANGLE 0.001 0.001 0.002 0.002\n", Gui.tempVEC); //Check if the coordinates are in the tempVec
@@ -51,59 +52,71 @@ public class UnitTests extends JPanel {
 
     @Test
     public void testDrawEllipse()  {
-        Gui.selectBtn = Gui.Type.ELLIPSE; //Select to draw ellipse
+        Gui.selectBtn = Gui.Type.ELLIPSE; //Select to draw plot
         mouseClick(1, 1); //Clicks on the canvas and draws plot at 0,0 coordinates
         mouseClick(2, 2);
         assertEquals("ELLIPSE 0.001 0.001 0.002 0.002\n", Gui.tempVEC); //Check if the coordinates are in the tempVec
     }
 
     @Test
-    public void testSetPenColourButton() {
-        //Create a dummy colour chooser to test with
-        Gui.colors = new JColorChooser(Color.GREEN);
-
-        //Draw a plot with the new colour
+    public void testGridPlot() {
+        Gui.gridX = 50;
+        Gui.gridY = 50;
         Gui.selectBtn = Gui.Type.PLOT; //Select to draw plot
-        mouseClick(1, 1); //Clicks on the canvas and draws plot at 1,1 coordinates
-
-        //Press the SetColourButton
-        Gui.doChangePenColour();
-
-        //Check the colour is in the temp vec
-        assertEquals("PLOT 0.001 0.001\nPEN #00ff00\n", Gui.tempVEC);
+        mouseClick(40, 40); //Clicks on the canvas and draws plot at 0,0 coordinates
+        assertEquals("PLOT 0.05 0.05\n", Gui.tempVEC); //Check if the coordinates are in the tempVec
     }
 
     @Test
-    public void testSetFillColourButton() {
-        //Create a dummy colour chooser to test with
-        Gui.colors = new JColorChooser(Color.ORANGE);
-
-        //Draw a rectangle with the new colour
-        Gui.selectBtn = Gui.Type.RECTANGLE; //Select to draw plot
-        mouseClick(1, 1); //Clicks on the canvas and draws rectangle at 1,1 to 2,2 coordinates
-        mouseClick(2, 2);
-
-        //Press the SetColourButton
-        Gui.doChangeFillColour();
-
-        //Check the colour is in the temp vec
-        assertEquals("RECTANGLE 0.001 0.001 0.002 0.002\nFILL #ffc800\n", Gui.tempVEC);
+    public void testGridLine()  {
+        Gui.gridX = 50;
+        Gui.gridY = 50;
+        Gui.selectBtn = Gui.Type.LINE; //Select to draw plot
+        mouseClick(40, 30); //Clicks on the canvas and draws plot at 0,0 coordinates
+        mouseClick(60, 40);
+        assertEquals("LINE 0.05 0.05 0.05 0.05\n", Gui.tempVEC); //Check if the coordinates are in the tempVec
     }
 
     @Test
-    public void testNoFillColourButton() {
-        //Create a dummy colour chooser to test with
-        Gui.colors = new JColorChooser(Color.ORANGE);
-
-        //Draw a rectangle a fill colour
+    public void testGridRect() {
+        Gui.gridX = 50;
+        Gui.gridY = 50;
         Gui.selectBtn = Gui.Type.RECTANGLE; //Select to draw plot
-        mouseClick(1, 1); //Clicks on the canvas and draws rectangle at 1,1 to 2,2 coordinates
-        mouseClick(2, 2);
+        mouseClick(40, 30); //Clicks on the canvas and draws plot at 0,0 coordinates
+        mouseClick(60, 40);
+        assertEquals("RECTANGLE 0.05 0.05 0.05 0.05\n", Gui.tempVEC); //Check if the coordinates are in the tempVec
+    }
 
-        //Press the SetColourButton
-        Gui.doRemoveFillColour();
+    @Test
+    public void testGridEllipse() {
+        Gui.gridX = 50;
+        Gui.gridY = 50;
+        Gui.selectBtn = Gui.Type.ELLIPSE; //Select to draw plot
+        mouseClick(40, 30); //Clicks on the canvas and draws plot at 0,0 coordinates
+        mouseClick(60, 40);
+        assertEquals("ELLIPSE 0.05 0.05 0.05 0.05\n", Gui.tempVEC); //Check if the coordinates are in the tempVec
+    }
 
-        //Check the colour is in the temp vec
-        assertEquals("RECTANGLE 0.001 0.001 0.002 0.002\nFILL OFF\n", Gui.tempVEC);
+    @Test
+    public void testGridPoly() {
+        Gui.gridX = 50;
+        Gui.gridY = 50;
+        Shapes.polAdd( 40,  30);
+        Shapes.polAdd( 30,  40);
+        Shapes.polAdd( 20,  50);
+        Shapes.polygon();
+        assertEquals("POLYGON 0.04 0.03 0.03 0.04 0.02 0.05\n", Gui.tempVEC); //Check if the coordinates are in the tempVec
+    }
+
+    @Test
+    public void testGridNumberFormatException() throws NumberFormatException {
+        Gui.gridXField = new JTextField();
+        Gui.gridYField = new JTextField();
+        Gui.gridXField.setText("asdf"); //Adds text in the text field
+        Gui.gridYField.setText("qwer"); //Adds text in the text field
+        assertThrows(NumberFormatException.class, () -> {
+            Gui.gridX = Integer.parseInt(Gui.gridXField.getText());
+            Gui.gridY = Integer.parseInt(Gui.gridYField.getText());
+        });
     }
 }
