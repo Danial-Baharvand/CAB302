@@ -4,6 +4,9 @@ import org.junit.jupiter.api.*;
 import javax.swing.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UnitTests extends JPanel {
@@ -55,7 +58,16 @@ public class UnitTests extends JPanel {
         Gui.selectBtn = Gui.Type.ELLIPSE; //Select to draw plot
         mouseClick(1, 1); //Clicks on the canvas and draws plot at 0,0 coordinates
         mouseClick(2, 2);
-        assertEquals("ELLIPSE 0.001 0.001 0.002 0.002\n", Gui.tempVEC); //Check if the coordinates are in the tempVec
+        assertEquals("ELLIPSE 0.001 0.001 0.002 0.002\n", Gui.tempVEC);
+        Gui.doUndo();
+
+        //Check if the coordinates are in the tempVec file
+    }
+    @Test
+    public void testUndo()  {
+        Gui.tempVEC="PLOT 0.001 0.001\nPLOT 0.002 0.002\n";
+        Gui.doUndo();
+        assertEquals("PLOT 0.001 0.001\n", Gui.tempVEC);
     }
 
     @Test
@@ -86,7 +98,68 @@ public class UnitTests extends JPanel {
         mouseClick(60, 40);
         assertEquals("RECTANGLE 0.05 0.05 0.05 0.05\n", Gui.tempVEC); //Check if the coordinates are in the tempVec
     }
+    @Test
+    public void testDrawPolygonPoints()  {
+        Shapes.polAdd( 1,  1);
+        Shapes.polAdd( 1,  10);
+        Shapes.polAdd( 10,  1);
+        assertEquals(Shapes.polX.toString(), "[1, 1, 10]");
+        assertEquals(Shapes.polY.toString(), "[1, 10, 1]");
+        //Check if the coordinates are in the tempVec file
+    }
+    @Test
+    public void testDrawPolygonFinish()  {
 
+        Shapes.polAdd( 1,  1);
+        Shapes.polAdd( 1,  10);
+        Shapes.polAdd( 10,  1);
+        Shapes.polygon();
+        assertEquals("POLYGON 0.001 0.001 0.001 0.01 0.01 0.001\n", Gui.tempVEC);
+        //Check if the coordinates are in the tempVec file
+    }
+    @Test
+    public void confirmHistoryActionTest()  {
+        Gui.tempVEC="PLOT 0.001 0.001\nPLOT 0.002 0.002\n";
+        Gui.historyTempVEC="PLOT 0.001 0.001";
+        Gui.confirmHistory();
+        assertEquals("PLOT 0.001 0.001\n", Gui.tempVEC);
+        assertEquals(-1, Gui.selectedHistory);
+
+    }
+    @Test
+    public void updateHistoryTest()  {
+        Gui.tempVEC="PLOT 0.001 0.001\nPLOT 0.002 0.002\nPLOT 0.003 0.003\n";
+        Gui.model = new DefaultListModel<>();
+        Gui.model.addAll(Arrays.asList(Gui.tempVEC.split("\n")));//adds each line of tempVEC as an item in the list
+        Gui.list = new JList<>( Gui.model );//make a new JList with the model as its contents
+        Gui.list.setSelectedIndex(1);
+        Gui.updateHistory();
+        assertEquals("PLOT 0.001 0.001\nPLOT 0.002 0.002",Gui.historyTempVEC);
+
+    }
+    @Test
+    public void intCanvasTest()  {
+        Gui.canvSize=1000;
+        assertEquals(300,MyPanel.intCanvas("0.3"));;
+
+    }
+    @Test
+    public void addHisTOTempTest()  {
+        Shapes.History.add("[POLYGON, 0.36, 0.093, 0.735, 0.187, 0.585, 0.526, \n" +
+                "]");
+        Gui.tempVEC="";
+        Shapes.addHisTOTemp();
+        assertEquals("POLYGON 0.36 0.093 0.735 0.187 0.585 0.526\n",Gui.tempVEC);
+        Shapes.History.clear();
+
+    }
+    @Test
+    public void addToHisAndTempTest()  {
+        Gui.tempVEC="";
+        Shapes.addToHisAndTemp(10,10, "PLOT");
+        assertEquals("PLOT 0.01 0.01\n",Gui.tempVEC);
+
+    }
     @Test
     public void testGridEllipse() {
         Gui.gridX = 50;
@@ -99,6 +172,8 @@ public class UnitTests extends JPanel {
 
     @Test
     public void testGridPoly() {
+        Shapes.polX.clear();
+        Shapes.polY.clear();
         Gui.gridX = 50;
         Gui.gridY = 50;
         Shapes.polAdd( 40,  30);
@@ -106,6 +181,7 @@ public class UnitTests extends JPanel {
         Shapes.polAdd( 20,  50);
         Shapes.polygon();
         assertEquals("POLYGON 0.04 0.03 0.03 0.04 0.02 0.05\n", Gui.tempVEC); //Check if the coordinates are in the tempVec
+        Shapes.polCount = -1;
     }
 
     @Test

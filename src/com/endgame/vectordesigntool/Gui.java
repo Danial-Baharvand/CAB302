@@ -35,7 +35,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     //initialising internal windows
     private JInternalFrame shapesWindow;
     private JInternalFrame colorWindow;
-    private JInternalFrame historyWindow;
+    static JInternalFrame historyWindow;
     //initialising history window buttons
     private JButton cancelHistory;
     private JButton confirmHistory;
@@ -49,11 +49,10 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     static String historyTempVEC="";
     static int canvSize = 1000;// canvas size can be changed form here
     static DefaultListModel<String> model;//keeps the list items
-
     static int gridX=-1;//value of gridXField converted to integer, set to -1 to disable grid
     static int gridY=-1;//value of gridYField converted to integer, set to -1 to disable grid
 
-    JList<String> list;
+    static JList<String> list;
     static int selectedHistory=-2;
 
     /**
@@ -76,7 +75,6 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//exit gracefully
         setJMenuBar(createMenu());//create the menuBar
         getContentPane().add(display());//add all contents (inside display) to frame
-
         addComponentListener(new ResizeListener());//add the resize listener to keep inner windows at correct location
         setVisible(true);//make things visible
     }
@@ -91,9 +89,9 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         bg.setBackground(Color.lightGray);//set background color
         //add contents
         bg.add(createColorWindow());
-        bg.add(makeCanvas());
-        bg.add(createShapes());
         bg.add(createHistoryWindow());
+        bg.add(createShapes());
+        bg.add(makeCanvas());
         return bg;
     }
 
@@ -105,7 +103,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     static JPanel makeCanvas(){
         canvas = new MyPanel(); // get a new instance of MyPanel
         canvas.setSize(canvSize, canvSize); //set the canvas size (always a square)
-        canvas.setLocation(150, 50);//set loction
+        canvas.setLocation(80, 30);//set loction
         canvas.setOpaque(true); //make the canvas opaque
         canvas.setBackground(Color.WHITE); //set canvas color
         canvas.addMouseListener(new canvasAction());// add a listener for mouse clicks on canvas
@@ -382,7 +380,8 @@ public class Gui extends JFrame implements ActionListener, Runnable {
                         new FileOutputStream(saveFilePath), StandardCharsets.US_ASCII))) {
                     writer.write(tempVEC);
                 } catch (IOException ex) {// catch IO exceptions
-                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(getContentPane(), "Please select a valid save location",
+                            "Input Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
@@ -412,8 +411,10 @@ public class Gui extends JFrame implements ActionListener, Runnable {
                     //load from file at selected location to the temp file with ASCII format
                     Shapes.fillColor=null;//discord previos fill color
                     tempVEC= Files.readString(Paths.get(selectedFile.getAbsolutePath()), StandardCharsets.US_ASCII);
+                    if(!tempVEC.endsWith("\n")) tempVEC=tempVEC+"\n";
                 } catch (IOException ex) {// catch IO exceptions
-                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(getContentPane(), "Please select a valid VEC file",
+                            "Input Error", JOptionPane.ERROR_MESSAGE);
                 }
                 canvas.repaint();
             }
@@ -423,13 +424,17 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     /**
      * Undo functionality for user actions
      */
+    static void doUndo(){
+        //implement undo
+        int endIndex = tempVEC.length()-2;//starts from temp lengths -2 to avoid last \n
+        endIndex = tempVEC.lastIndexOf('\n', endIndex-1);//get the index of last character before last line
+        if(endIndex==-1){endIndex=0;}//for the last line
+        tempVEC=tempVEC.substring(0,endIndex)+"\n";//update temp
+
+    }
     class undoAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
-          //implement undo
-            int endIndex = tempVEC.length()-2;//starts from temp lengths -2 to avoid last \n
-            endIndex = tempVEC.lastIndexOf('\n', endIndex-1);//get the index of last character before last line
-            if(endIndex==-1){endIndex=0;}//for the last line
-            tempVEC=tempVEC.substring(0,endIndex)+"\n";//update temp
+            doUndo();
             repaint();//show the updated canvas
         }
     }
@@ -600,10 +605,13 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     /**
      * confirm the selected stage of drawing
      */
+    static void confirmHistory(){
+        tempVEC = historyTempVEC+"\n";//set the main temp to the history temp
+        selectedHistory=-1;//reset the menu selected item
+    }
     class confirmHistoryAction implements ActionListener{
         public void actionPerformed(ActionEvent e) {
-            tempVEC = historyTempVEC+"\n";//set the main temp to the history temp
-            selectedHistory=-1;//reset the menu selected item
+            confirmHistory();
             //disable buttons
             cancelHistory.setEnabled(false);
             confirmHistory.setEnabled(false);
@@ -656,15 +664,8 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         public void actionPerformed(ActionEvent e) {
             int bmpRes = -1;//stores bitmap size
             try {
+                if (Integer.parseInt(bmpResField.getText()) < 1) throw new UserInputException();//check valid range
                 bmpRes = Integer.parseInt(bmpResField.getText()); //get text input and convert string to int
-            } catch (NumberFormatException exception) {//catch if not an integer
-                JOptionPane.showMessageDialog(getContentPane(), "Please input a positive integer",
-                        "Input: Error", JOptionPane.ERROR_MESSAGE);
-            }
-            if (bmpRes < 1) {//check valid range
-                JOptionPane.showMessageDialog(getContentPane(), "Please enter a valid value "
-                        , "Input: Error", JOptionPane.ERROR_MESSAGE);
-            } else {
                 String saveFilePath;//stores save path
                 //get a new file chooser at home directory
                 JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
@@ -683,18 +684,29 @@ public class Gui extends JFrame implements ActionListener, Runnable {
                     int tempCanvSize = canvSize;//store orignal canvas size
                     canvSize = bmpRes;//change canvas size to the user requested resolution
                     //make a new, empty, buffered image for the image to be drawn to
-                    BufferedImage image = new BufferedImage(bmpRes, bmpRes, BufferedImage.TYPE_INT_RGB);
-                    Graphics g = image.getGraphics();//get the graphics of the buffered image
-                    bmpPanel.paint(g);//paint the drawing to the buffered image's graphic
-                    canvSize = tempCanvSize;//restore original canvas size
                     try {
+                        BufferedImage image = new BufferedImage(bmpRes, bmpRes, BufferedImage.TYPE_INT_RGB);
+                        Graphics g = image.getGraphics();//get the graphics of the buffered image
+                        bmpPanel.paint(g);//paint the drawing to the buffered image's graphic
+                        canvSize = tempCanvSize;//restore original canvas size
+
                         ImageIO.write(image, "bmp", new File(saveFilePath));//save the image
+
+                    } catch (IllegalArgumentException|OutOfMemoryError|NegativeArraySizeException ex1) {
+                        JOptionPane.showMessageDialog(getContentPane(), "Please enter a reasonable resolution",
+                                "IO: Error", JOptionPane.ERROR_MESSAGE);
                     } catch (IOException ex) {
-                        JOptionPane.showMessageDialog(getContentPane(), "Please ensure IO is availible to be written to",
+                        JOptionPane.showMessageDialog(getContentPane(), "Please ensure IO is available to be written to",
                                 "IO: Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
+
+            } catch (NumberFormatException | UserInputException exception) {//catch if not an integer
+                JOptionPane.showMessageDialog(getContentPane(), "Please input a positive integer greater than 0",
+                        "Input: Error", JOptionPane.ERROR_MESSAGE);
             }
+
+
         }
     }
 
@@ -757,19 +769,21 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     /**
      * updates a secondary temp when a menu item is selected and shows the drawing at that stage
      */
+    static void updateHistory(){
+            selectedHistory = list.getSelectedIndex();//save selected history menu item
+            //deleting the undo instructions
+            int endIndex = -1;//starts from -1 and is increased for the number of desired characters
+            for (int i = 0; i <= selectedHistory; i++) {
+                endIndex = tempVEC.indexOf('\n', endIndex + 1);//get the index of the last character
+            }
+            historyTempVEC = tempVEC.substring(0, endIndex);//save the updated string to history temp
+    }
     class myListSelectionListener implements ListSelectionListener {
         @Override
         public void valueChanged(ListSelectionEvent e) {
             if (!e.getValueIsAdjusting() && !list.isSelectionEmpty()) {//check if a menu item is properly selected
-                selectedHistory=list.getSelectedIndex();//save selected history menu item
-                System.out.println(selectedHistory);
-                //deleting the undo instructions
-                int endIndex = -1;//starts from -1 and is increased for the number of desired characters
-                for (int i = 0; i <= selectedHistory; i++) {
-                    endIndex = tempVEC.indexOf('\n', endIndex+1);//get the index of the last character
-                }
-                historyTempVEC=tempVEC.substring(0, endIndex);//save the updated string to history temp
                 //enable buttons
+                updateHistory();
                 cancelHistory.setEnabled(true);
                 confirmHistory.setEnabled(true);
                 repaint();//repaint so the user sees the changes on the canvas immediately
@@ -777,7 +791,24 @@ public class Gui extends JFrame implements ActionListener, Runnable {
 
         }
     }
-    
+    class UserInputException extends Exception {
+        public UserInputException() {
+            super();
+        }
+
+        public UserInputException(String message) {
+            super(message);
+        }
+
+        public UserInputException(String message, Throwable cause) {
+            super(message, cause);
+        }
+
+        public UserInputException(Throwable cause) {
+            super(cause);
+        }
+    }
+
     @Override
     public void run() {
         createGUI();

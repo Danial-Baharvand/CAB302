@@ -126,7 +126,7 @@ class MyPanel extends JPanel {
      * @param s coordinates of the VEC file format
      * @return the coordinates or the VEC format based on the canvas size
      */
-    private static int intCanvas(String s){
+    static int intCanvas(String s){
         return (int)(Float.valueOf(s)*Gui.canvSize);
     }
 }
