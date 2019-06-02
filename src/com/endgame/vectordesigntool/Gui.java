@@ -39,7 +39,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     //initialising history window buttons
     private JButton cancelHistory;
     private JButton confirmHistory;
-    private JColorChooser colors;//initialising the colorChooser
+    static JColorChooser colors;//initialising the colorChooser
     static Type selectBtn;//stores which shape is currently selected
     private static JTextField gridXField;//holds the horizontal size of the grid
     private static JTextField gridYField;//holds the vertical size of the grid
@@ -532,34 +532,55 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     }
 
     /**
-     * store the selected color in the JColorChooser in the temp file
+     * Actions for when set pen colour button is pressed
      */
     class penColorAction implements ActionListener{
         public void actionPerformed(ActionEvent e) {
-            tempVEC = tempVEC + "PEN " + "#" + Integer.toHexString(colors.getColor().getRGB()).substring(2)+"\n";
+            doChangePenColour();
             repaint();
         }
     }
 
     /**
-     * store the selected fill color in the JColorChooser in the temp file
+     * Store the selected color in the JColorChooser in the temp file
+     */
+    static void doChangePenColour() {
+        tempVEC = tempVEC + "PEN " + "#" + Integer.toHexString(colors.getColor().getRGB()).substring(2)+"\n";
+    }
+
+    /**
+     * Actions for when set fill colour button is pressed
      */
     class fillColorAction implements ActionListener{
         public void actionPerformed(ActionEvent e) {
-            tempVEC = tempVEC + "FILL " + "#" + Integer.toHexString(colors.getColor().getRGB()).substring(2)+"\n";
+            doChangeFillColour();
             repaint();
         }
     }
 
     /**
-     * insert FILL OFF command in temp to avoid filling the next shape
+     * Store the selected fill color in the JColorChooser in the temp file
+     */
+    static void doChangeFillColour() {
+        tempVEC = tempVEC + "FILL " + "#" + Integer.toHexString(colors.getColor().getRGB()).substring(2)+"\n";
+    }
+
+    /**
+     * Actions for when no fill colour button is pressed
      */
     class noFillColorAction implements ActionListener{
         public void actionPerformed(ActionEvent e) {
-            tempVEC = tempVEC + "FILL OFF\n";
+            doRemoveFillColour();
             repaint();
         }
 
+    }
+
+    /**
+     * Insert FILL OFF command in temp to avoid filling the next shape
+     */
+    static void doRemoveFillColour() {
+        tempVEC = tempVEC + "FILL OFF\n";
     }
 
     /**
