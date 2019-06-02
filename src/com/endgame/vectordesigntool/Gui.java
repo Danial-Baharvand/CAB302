@@ -31,7 +31,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();//getting user's resolution
     private double WIDTH = screenSize.getWidth(); // screen width
     private double HEIGHT = screenSize.getHeight();//screen height
-    private JButton polEndButton;//button completes a polygon
+    private static JButton polEndButton;//button completes a polygon
     //initialising internal windows
     private JInternalFrame shapesWindow;
     private JInternalFrame colorWindow;
@@ -102,7 +102,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
      *
      * @return the canvas to be added to the display window.
      */
-    private JPanel makeCanvas(){
+    static JPanel makeCanvas(){
         canvas = new MyPanel(); // get a new instance of MyPanel
         canvas.setSize(canvSize, canvSize); //set the canvas size (always a square)
         canvas.setLocation(150, 50);//set loction
@@ -270,7 +270,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     /**
      * makes the popup grid window
      */
-    private void gridWin(){
+    void gridWin(){
         //Popup window
         JFrame parent = new JFrame("Grid Input");
         //Panels
@@ -599,7 +599,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             }else {//remove the grid if grid is active
                 gridX=-1;
                 gridY=-1;
-                repaint();//show canvas witout grid
+                repaint();//show canvas without grid
             }
         }
     }
@@ -677,7 +677,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
      * based on the selected button send the click coordinates to be proccessed. the shape instruction will be saved
      * to the temp file once the shape is complete
      */
-    class canvasAction extends MouseAdapter {
+    static class canvasAction extends MouseAdapter {
         @Override
         public void mouseClicked(MouseEvent e) {
             int x=e.getX();//get mouse click x
