@@ -53,7 +53,8 @@ public class UnitTests extends JPanel {
         Gui.selectBtn = Gui.Type.ELLIPSE; //Select to draw plot
         mouseClick(1, 1); //Clicks on the canvas and draws plot at 0,0 coordinates
         mouseClick(2, 2);
-        assertEquals("ELLIPSE 0.001 0.001 0.002 0.002\n", Gui.tempVEC); //Check if the coordinates are in the tempVec    }
+        assertEquals("ELLIPSE 0.001 0.001 0.002 0.002\n", Gui.tempVEC); //Check if the coordinates are in the tempVec
+    }
 
     @Test
     public void testGrid() {
