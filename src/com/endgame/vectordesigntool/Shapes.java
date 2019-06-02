@@ -143,7 +143,6 @@ class Shapes {
                 History.add(String.valueOf((float)polY.get(i)/Gui.canvSize));
             }
             History.add("\n");
-            System.out.print(History);
             addHisTOTemp();//add the polygon to temp
             readyToDraw=true;//enable drawing
             //reset
