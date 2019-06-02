@@ -24,7 +24,7 @@ class Shapes {
     static boolean readyToDraw=false;//dictates when the graphics can be updated
     static int pressedX = -1;//stores the first x coordinate for the two point shapes, set to -1 before it's recorded
     static int pressedY = -1;//stores the first y coordinate for the two point shapes, set to -1 before it's recorded
-    private static ArrayList<String> History = new ArrayList<String>();// instructions are constructed in History
+    static ArrayList<String> History = new ArrayList<String>();// instructions are constructed in History
 
     /**
      * draws a dot on canvas
@@ -143,6 +143,7 @@ class Shapes {
                 History.add(String.valueOf((float)polY.get(i)/Gui.canvSize));
             }
             History.add("\n");
+            System.out.print(History);
             addHisTOTemp();//add the polygon to temp
             readyToDraw=true;//enable drawing
             //reset
@@ -182,7 +183,7 @@ class Shapes {
     /**
      * (helper class) adds contents of the secondary temp to the main temp and properly formats it
      */
-    private static void addHisTOTemp(){
+    static void addHisTOTemp(){
         Gui.tempVEC= Gui.tempVEC +History.toString().replace(",", "")  //remove the commas
                 .replace("[", "")  //remove the right bracket
                 .replace("]", "")  //remove the left bracket
@@ -196,7 +197,7 @@ class Shapes {
      * @param y coordinate
      * @param shapeName
      */
-    private static void addToHisAndTemp(int x, int y, String shapeName){
+    static void addToHisAndTemp(int x, int y, String shapeName){
         History.add(shapeName);
         if (!shapeName.equals("PLOT")) {
             History.add(String.valueOf((float) pressedX / Gui.canvSize));
