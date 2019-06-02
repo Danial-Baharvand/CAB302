@@ -6,8 +6,8 @@ import java.util.ArrayList;
 /**
  * Reads and then stores the coordinates of the users mouse clicks to a temp file.
  *
- * @authors Group_010
- * @version 3.9 (Javadocs + Exceptions + Unittesting)
+ * @author Group_010
+ * @version 4.2
  */
 class Shapes {
     static int polCount = 0;//number of polygon points for saving to temp
@@ -229,5 +229,16 @@ class Shapes {
             readyToDraw=true;
             pressedX = -1;
         }
+    }
+
+    /**
+     * resets the values of stored points for shapes
+     */
+    static void resetShapesCoordinates(){
+        pressedX = -1;
+        pressedY = -1;
+        polX.clear();
+        polY.clear();
+        polCount=0;
     }
 }

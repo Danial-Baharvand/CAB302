@@ -17,7 +17,7 @@ import java.util.Arrays;
 /**
  * Application - GUI creation and declaration, in addition to action listener classes
  *
- * @authors Group_010 - Daniel Baharvand, James Dick, Jai Hunt, Jovi Lee
+ * @author Group_010 - Daniel Baharvand, James Dick, Jai Hunt, Jovi Lee
  * @version 4.2
  */
 public class Gui extends JFrame implements ActionListener, Runnable {
@@ -47,8 +47,9 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     private static JPanel canvas;// initialising the canvas
     static String tempVEC="";//this string is usd as cache, the VEC instructions are saved here
     static String historyTempVEC="";
-    static int canvSize = 800;// canvas size can be changed form here
+    static int canvSize = 1000;// canvas size can be changed form here
     static DefaultListModel<String> model;//keeps the list items
+
     static int gridX=-1;//value of gridXField converted to integer, set to -1 to disable grid
     static int gridY=-1;//value of gridYField converted to integer, set to -1 to disable grid
 
@@ -75,6 +76,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//exit gracefully
         setJMenuBar(createMenu());//create the menuBar
         getContentPane().add(display());//add all contents (inside display) to frame
+
         addComponentListener(new ResizeListener());//add the resize listener to keep inner windows at correct location
         setVisible(true);//make things visible
     }
@@ -89,9 +91,9 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         bg.setBackground(Color.lightGray);//set background color
         //add contents
         bg.add(createColorWindow());
-        bg.add(createHistoryWindow());
-        bg.add(createShapes());
         bg.add(makeCanvas());
+        bg.add(createShapes());
+        bg.add(createHistoryWindow());
         return bg;
     }
 
@@ -103,7 +105,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     private JPanel makeCanvas(){
         canvas = new MyPanel(); // get a new instance of MyPanel
         canvas.setSize(canvSize, canvSize); //set the canvas size (always a square)
-        canvas.setLocation(80, 30);//set loction
+        canvas.setLocation(150, 50);//set loction
         canvas.setOpaque(true); //make the canvas opaque
         canvas.setBackground(Color.WHITE); //set canvas color
         canvas.addMouseListener(new canvasAction());// add a listener for mouse clicks on canvas
@@ -266,14 +268,71 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     }
 
     /**
-     * resets the values of stored points for shapes
+     * makes the popup grid window
      */
-    private void resetShapesCoordinates(){
-        Shapes.pressedX = -1;
-        Shapes.pressedY = -1;
-        Shapes.polX.clear();
-        Shapes.polY.clear();
-        Shapes.polCount=0;
+    private void gridWin(){
+        //Popup window
+        JFrame parent = new JFrame("Grid Input");
+        //Panels
+        JPanel xPanel = new JPanel(new BorderLayout()); //panel for x option
+        JPanel yPanel = new JPanel(new BorderLayout()); //panel for y option
+        //Button
+        JButton enterBtn = new JButton("Confirm");
+        //Text boxes
+        gridXField = new JTextField(10);
+        gridYField = new JTextField(10);
+        //Text labels
+        JLabel xInput = new JLabel();
+        JLabel yInput = new JLabel();
+        //Setting parameters
+        xPanel.setLayout(new BoxLayout(xPanel, BoxLayout.Y_AXIS));
+        yPanel.setLayout(new BoxLayout(yPanel, BoxLayout.Y_AXIS));
+        xInput.setText("Please input the x coordinate: ");
+        yInput.setText("Please input the y coordinate: ");
+        //Adds
+        xPanel.add(xInput, BorderLayout.LINE_START);
+        xPanel.add(gridXField, BorderLayout.LINE_END);
+        yPanel.add(yInput, BorderLayout.LINE_START);
+        yPanel.add(gridYField, BorderLayout.LINE_END);
+        parent.add(xPanel, BorderLayout.PAGE_START);
+        parent.add(yPanel, BorderLayout.CENTER);
+        parent.add(enterBtn, BorderLayout.PAGE_END);
+        enterBtn.addActionListener(new gridEnterAction());
+        //Display parameters
+        parent.pack();
+        parent.setVisible(true);
+        parent.setResizable(false);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    /**
+     * makes the popup bmp window
+     */
+    private void bmpWin(){
+        //Popup window
+        JFrame parent = new JFrame("Grid Input");
+        //Panel
+        JPanel xPanel = new JPanel(new BorderLayout()); //panel for x option
+        //Button
+        JButton enterBtn = new JButton("Confirm");
+        //Text boxe
+        bmpResField = new JTextField(10);
+        //Text label
+        JLabel xInput = new JLabel();
+        //Setting parameters
+        xPanel.setLayout(new BoxLayout(xPanel, BoxLayout.Y_AXIS));
+        xInput.setText("Please input the desired resolution: ");
+        //Adds
+        xPanel.add(xInput, BorderLayout.LINE_START);
+        xPanel.add(bmpResField, BorderLayout.LINE_END);
+        parent.add(xPanel, BorderLayout.PAGE_START);
+        parent.add(enterBtn, BorderLayout.PAGE_END);
+        enterBtn.addActionListener(new bmpEnterAction());
+        //Display parameters
+        parent.pack();
+        parent.setVisible(true);
+        parent.setResizable(false);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     /* Action Listener Implementation Classes */
@@ -309,8 +368,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
                         new FileOutputStream(saveFilePath), StandardCharsets.US_ASCII))) {
                     writer.write(tempVEC);
                 } catch (IOException ex) {// catch IO exceptions
-                    JOptionPane.showMessageDialog(getContentPane(), "Please select a valid save location",
-                            "Input Error", JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
                 }
             }
         }
@@ -340,10 +398,8 @@ public class Gui extends JFrame implements ActionListener, Runnable {
                     //load from file at selected location to the temp file with ASCII format
                     Shapes.fillColor=null;//discord previos fill color
                     tempVEC= Files.readString(Paths.get(selectedFile.getAbsolutePath()), StandardCharsets.US_ASCII);
-                    if(!tempVEC.endsWith("\n")) tempVEC=tempVEC+"\n";
                 } catch (IOException ex) {// catch IO exceptions
-                    JOptionPane.showMessageDialog(getContentPane(), "Please select a valid VEC file",
-                            "Input Error", JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
                 }
                 canvas.repaint();
             }
@@ -356,7 +412,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     class undoAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
           //implement undo
-            int endIndex = tempVEC.length()-2;//starts from temp lenghts -2 to avoid last \n
+            int endIndex = tempVEC.length()-2;//starts from temp lengths -2 to avoid last \n
             endIndex = tempVEC.lastIndexOf('\n', endIndex-1);//get the index of last character before last line
             if(endIndex==-1){endIndex=0;}//for the last line
             tempVEC=tempVEC.substring(0,endIndex)+"\n";//update temp
@@ -412,7 +468,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         public void actionPerformed (ActionEvent e){
             polEndButton.setEnabled(false);
             selectBtn = Type.PLOT;
-            resetShapesCoordinates();
+            Shapes.resetShapesCoordinates();
 
         }
     }
@@ -425,7 +481,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         public void actionPerformed (ActionEvent e){
             polEndButton.setEnabled(false);
             selectBtn = Type.LINE;
-            resetShapesCoordinates();
+            Shapes.resetShapesCoordinates();
         }
     }
 
@@ -437,7 +493,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         public void actionPerformed (ActionEvent e){
             polEndButton.setEnabled(false);
             selectBtn = Type.RECTANGLE;
-            resetShapesCoordinates();
+            Shapes.resetShapesCoordinates();
         }
     }
 
@@ -449,7 +505,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         public void actionPerformed (ActionEvent e){
             polEndButton.setEnabled(false);
             selectBtn = Type.ELLIPSE;
-            resetShapesCoordinates();
+            Shapes.resetShapesCoordinates();
         }
     }
 
@@ -460,7 +516,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
     class polygonAction implements ActionListener{
         public void actionPerformed (ActionEvent e){
             selectBtn =Type.POLYGON;
-            resetShapesCoordinates();
+            Shapes.resetShapesCoordinates();
         }
     }
 
@@ -556,14 +612,13 @@ public class Gui extends JFrame implements ActionListener, Runnable {
             try {
                 gridX = Integer.parseInt(gridXField.getText()); //get text input and convert string to int
                 gridY = Integer.parseInt(gridYField.getText()); //get text input and convert string to int
-                if (gridX <= 0 || gridY <= 0 || gridX>canvSize/2 ||gridY>canvSize/2) {
-                    gridX=-1;
-                    gridY=-1;
-                    throw new UserInputException("Please input an integer between 1 and "+String.valueOf(canvSize));
-                }
-            } catch (NumberFormatException | UserInputException exception) {//catch if not an integer
-                JOptionPane.showMessageDialog(getContentPane(), exception.getMessage(),
-                        "Input Error", JOptionPane.ERROR_MESSAGE);
+            } catch (NumberFormatException exception) {//catch if not an integer
+                JOptionPane.showMessageDialog(getContentPane(), "Please input a positive integer",
+                        "Input: Error", JOptionPane.ERROR_MESSAGE);
+            }
+            if (gridX <= 0 || gridY <= 0 || gridX>canvSize/2 ||gridY>canvSize/2) {//check valid range
+                JOptionPane.showMessageDialog(getContentPane(), "Please input an integer between 1 and "
+                        + canvSize, "Input: Error", JOptionPane.ERROR_MESSAGE);
             }
             repaint();// show the grid
         }
@@ -576,8 +631,15 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         public void actionPerformed(ActionEvent e) {
             int bmpRes = -1;//stores bitmap size
             try {
-                if (Integer.parseInt(bmpResField.getText()) < 1) throw new UserInputException();//check valid range
                 bmpRes = Integer.parseInt(bmpResField.getText()); //get text input and convert string to int
+            } catch (NumberFormatException exception) {//catch if not an integer
+                JOptionPane.showMessageDialog(getContentPane(), "Please input a positive integer",
+                        "Input: Error", JOptionPane.ERROR_MESSAGE);
+            }
+            if (bmpRes < 1) {//check valid range
+                JOptionPane.showMessageDialog(getContentPane(), "Please enter a valid value "
+                        , "Input: Error", JOptionPane.ERROR_MESSAGE);
+            } else {
                 String saveFilePath;//stores save path
                 //get a new file chooser at home directory
                 JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
@@ -596,98 +658,19 @@ public class Gui extends JFrame implements ActionListener, Runnable {
                     int tempCanvSize = canvSize;//store orignal canvas size
                     canvSize = bmpRes;//change canvas size to the user requested resolution
                     //make a new, empty, buffered image for the image to be drawn to
+                    BufferedImage image = new BufferedImage(bmpRes, bmpRes, BufferedImage.TYPE_INT_RGB);
+                    Graphics g = image.getGraphics();//get the graphics of the buffered image
+                    bmpPanel.paint(g);//paint the drawing to the buffered image's graphic
+                    canvSize = tempCanvSize;//restore original canvas size
                     try {
-                        BufferedImage image = new BufferedImage(bmpRes, bmpRes, BufferedImage.TYPE_INT_RGB);
-                        Graphics g = image.getGraphics();//get the graphics of the buffered image
-                        bmpPanel.paint(g);//paint the drawing to the buffered image's graphic
-                        canvSize = tempCanvSize;//restore original canvas size
-
                         ImageIO.write(image, "bmp", new File(saveFilePath));//save the image
-
-                    } catch (IllegalArgumentException|OutOfMemoryError|NegativeArraySizeException ex1) {
-                        JOptionPane.showMessageDialog(getContentPane(), "Please enter a reasonable resolution",
-                                "IO: Error", JOptionPane.ERROR_MESSAGE);
                     } catch (IOException ex) {
-                        JOptionPane.showMessageDialog(getContentPane(), "Please ensure IO is available to be written to",
+                        JOptionPane.showMessageDialog(getContentPane(), "Please ensure IO is availible to be written to",
                                 "IO: Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
-
-            } catch (NumberFormatException | UserInputException exception) {//catch if not an integer
-                JOptionPane.showMessageDialog(getContentPane(), "Please input a positive integer greater than 0",
-                        "Input: Error", JOptionPane.ERROR_MESSAGE);
             }
-
-
         }
-    }
-
-    /**
-     * makes the popup grid window
-     */
-    private void gridWin(){
-        //Popup window
-        JFrame parent = new JFrame("Grid Input");
-        //Panels
-        JPanel xPanel = new JPanel(new BorderLayout()); //panel for x option
-        JPanel yPanel = new JPanel(new BorderLayout()); //panel for y option
-        //Button
-        JButton enterBtn = new JButton("Confirm");
-        //Text boxes
-        gridXField = new JTextField(10);
-        gridYField = new JTextField(10);
-        //Text labels
-        JLabel xInput = new JLabel();
-        JLabel yInput = new JLabel();
-        //Setting parameters
-        xPanel.setLayout(new BoxLayout(xPanel, BoxLayout.Y_AXIS));
-        yPanel.setLayout(new BoxLayout(yPanel, BoxLayout.Y_AXIS));
-        xInput.setText("Please input the x coordinate: ");
-        yInput.setText("Please input the y coordinate: ");
-        //Adds
-        xPanel.add(xInput, BorderLayout.LINE_START);
-        xPanel.add(gridXField, BorderLayout.LINE_END);
-        yPanel.add(yInput, BorderLayout.LINE_START);
-        yPanel.add(gridYField, BorderLayout.LINE_END);
-        parent.add(xPanel, BorderLayout.PAGE_START);
-        parent.add(yPanel, BorderLayout.CENTER);
-        parent.add(enterBtn, BorderLayout.PAGE_END);
-        enterBtn.addActionListener(new gridEnterAction());
-        //Display parameters
-        parent.pack();
-        parent.setVisible(true);
-        parent.setResizable(false);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }
-
-    /**
-     * makes the popup bmp window
-     */
-    private void bmpWin(){
-        //Popup window
-        JFrame parent = new JFrame("Grid Input");
-        //Panel
-        JPanel xPanel = new JPanel(new BorderLayout()); //panel for x option
-        //Button
-        JButton enterBtn = new JButton("Confirm");
-        //Text boxe
-        bmpResField = new JTextField(10);
-        //Text label
-        JLabel xInput = new JLabel();
-        //Setting parameters
-        xPanel.setLayout(new BoxLayout(xPanel, BoxLayout.Y_AXIS));
-        xInput.setText("Please input the desired resolution: ");
-        //Adds
-        xPanel.add(xInput, BorderLayout.LINE_START);
-        xPanel.add(bmpResField, BorderLayout.LINE_END);
-        parent.add(xPanel, BorderLayout.PAGE_START);
-        parent.add(enterBtn, BorderLayout.PAGE_END);
-        enterBtn.addActionListener(new bmpEnterAction());
-        //Display parameters
-        parent.pack();
-        parent.setVisible(true);
-        parent.setResizable(false);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     /**
@@ -754,6 +737,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
         public void valueChanged(ListSelectionEvent e) {
             if (!e.getValueIsAdjusting() && !list.isSelectionEmpty()) {//check if a menu item is properly selected
                 selectedHistory=list.getSelectedIndex();//save selected history menu item
+                System.out.println(selectedHistory);
                 //deleting the undo instructions
                 int endIndex = -1;//starts from -1 and is increased for the number of desired characters
                 for (int i = 0; i <= selectedHistory; i++) {
@@ -768,24 +752,7 @@ public class Gui extends JFrame implements ActionListener, Runnable {
 
         }
     }
-    class UserInputException extends Exception {
-        public UserInputException() {
-            super();
-        }
-
-        public UserInputException(String message) {
-            super(message);
-        }
-
-        public UserInputException(String message, Throwable cause) {
-            super(message, cause);
-        }
-
-        public UserInputException(Throwable cause) {
-            super(cause);
-        }
-    }
-
+    
     @Override
     public void run() {
         createGUI();

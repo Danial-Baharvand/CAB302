@@ -8,8 +8,8 @@ import java.util.Scanner;
 /**
  * Reads from temp file and then uses that information to enable the user to draw shapes onto the canvas.
  *
- * @authors Group_010
- * @version 3.9 (Javadocs + Exceptions + Unittesting)
+ * @author Group_010
+ * @version 4.2
  */
 class MyPanel extends JPanel {
 
