@@ -4,7 +4,6 @@ import org.junit.jupiter.api.*;
 import javax.swing.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -168,20 +167,6 @@ public class UnitTests extends JPanel {
         mouseClick(40, 30); //Clicks on the canvas and draws plot at 0,0 coordinates
         mouseClick(60, 40);
         assertEquals("ELLIPSE 0.05 0.05 0.05 0.05\n", Gui.tempVEC); //Check if the coordinates are in the tempVec
-    }
-
-    @Test
-    public void testGridPoly() {
-        Shapes.polX.clear();
-        Shapes.polY.clear();
-        Gui.gridX = 50;
-        Gui.gridY = 50;
-        Shapes.polAdd( 40,  30);
-        Shapes.polAdd( 30,  40);
-        Shapes.polAdd( 20,  50);
-        Shapes.polygon();
-        assertEquals("POLYGON 0.04 0.03 0.03 0.04 0.02 0.05\n", Gui.tempVEC); //Check if the coordinates are in the tempVec
-        Shapes.polCount = -1;
     }
 
     @Test

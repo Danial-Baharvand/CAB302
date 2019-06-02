@@ -18,7 +18,7 @@ import java.util.Arrays;
  * Application - GUI creation and declaration, in addition to action listener classes
  *
  * @author Group_010 - Daniel Baharvand, James Dick, Jai Hunt, Jovi Lee
- * @version 4.9
+ * @version 5.0
  */
 public class Gui extends JFrame implements ActionListener, Runnable {
     @Override
